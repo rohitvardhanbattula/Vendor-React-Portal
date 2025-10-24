@@ -1,0 +1,39 @@
+<mvc:View
+    controllerName="vendorportal.controller.Login"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page showHeader="false" class="sapUiContentPadding">
+        <VBox>
+    <Toolbar class="blueHeaderToolbar" height="3rem" design="Solid">
+        <ToolbarSpacer width="0.5rem"/>
+        <Image
+            src="./images/companylogo.png"
+            height="2rem" />  </Toolbar>
+</VBox>
+        <FlexBox height="100%" alignItems="Center" justifyContent="Center">
+            <Panel width="350px">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="Vendor Portal Login"/>
+                    </Toolbar>
+                </headerToolbar>
+                <content>
+                    <VBox class="sapUiSmallMargin">
+                        <Label text="Username" labelFor="usernameInput"/>
+                        <Input id="usernameinput" class="sapUiSmallMarginBottom"/>
+                        
+                        <Label text="Password" labelFor="passwordInput"/>
+                        <Input id="passwordinput" type="Password" class="sapUiMediumMarginBottom"/>
+                        
+                        <Button id="loginButton" text="Login" type="Emphasized" width="100%" press=".onLoginPress"/>
+                        
+                        <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
+                            <Link text="Forgot Password?" press=".onForgotPassword"/>
+                            <Link text="Register New User" press=".onRegister"/>
+                        </HBox>
+                    </VBox>
+                </content>
+            </Panel>
+        </FlexBox>
+    </Page>
+</mvc:View>
