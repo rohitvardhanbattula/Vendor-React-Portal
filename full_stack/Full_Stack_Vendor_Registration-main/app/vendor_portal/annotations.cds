@@ -1,1 +1,0 @@
-using SupplierService as service from '../../srv/service';

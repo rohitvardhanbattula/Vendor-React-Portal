@@ -1,0 +1,12 @@
+{
+  "Name": "vendorportaldest",
+  "Type": "HTTP",
+  "URL": "https://YOUR-BACKEND-URL.cfapps.YOUR-REGION.hana.ondemand.com",
+  "ProxyType": "Internet",
+  "Authentication": "NoAuthentication",
+  "Description": "Vendor Portal CAPM Backend Destination",
+  "HTML5.DynamicDestination": true,
+  "HTML5.ForwardAuthToken": false,
+  "WebIDEEnabled": true,
+  "WebIDEUsage": "odata_gen"
+}

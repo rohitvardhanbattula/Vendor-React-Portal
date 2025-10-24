@@ -1,0 +1,3 @@
+# MBT Build Configuration
+[mta]
+builders = npm

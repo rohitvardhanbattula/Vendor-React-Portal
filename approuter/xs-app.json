@@ -1,0 +1,52 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "none",
+  "routes": [
+    {
+      "source": "^/odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "vendorportaldest",
+      "authenticationType": "none",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/uploadattachments$",
+      "target": "/uploadattachments",
+      "destination": "vendorportaldest",
+      "authenticationType": "none",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/fileextraction$",
+      "target": "/fileextraction",
+      "destination": "vendorportaldest",
+      "authenticationType": "none",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/fetchGSTDetails$",
+      "target": "/fetchGSTDetails",
+      "destination": "vendorportaldest",
+      "authenticationType": "none",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/downloadZip/(.*)$",
+      "target": "/downloadZip/$1",
+      "destination": "vendorportaldest",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/downloadFile/(.*)$",
+      "target": "/downloadFile/$1",
+      "destination": "vendorportaldest",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/(.*)$",
+      "target": "$1",
+      "localDir": "webapp",
+      "authenticationType": "none"
+    }
+  ]
+}

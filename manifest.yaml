@@ -1,0 +1,21 @@
+---
+applications:
+  - name: vendor-portal
+    path: approuter
+    buildpack: nodejs_buildpack
+    memory: 512M
+    disk_quota: 512M
+    instances: 1
+    routes:
+      - route: vendor-portal-${org}-${space}.cfapps.${region}.hana.ondemand.com
+    env:
+      destinations: >
+        [
+          {
+            "name": "vendorportaldest",
+            "url": "YOUR_BACKEND_URL_HERE",
+            "forwardAuthToken": false
+          }
+        ]
+    services:
+      - vendor-portal-destination

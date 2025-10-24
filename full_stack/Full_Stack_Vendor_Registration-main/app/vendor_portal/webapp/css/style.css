@@ -1,9 +1,0 @@
-/* Make header blue with white text */
-.blueHeaderToolbar {
-    background-color: #0a6ed1 !important; /* SAP blue */
-    color: white !important;
-}
-
-.blueHeaderToolbar .sapMTitle {
-    color: white !important;
-}

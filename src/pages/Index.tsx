@@ -3,9 +3,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useNavigate } from "react-router-dom";
 import { Building2, FileCheck, Shield, Zap } from "lucide-react";
 import heroImage from "@/assets/hero-vendor.jpg";
+import { useEffect } from "react";
+import { sessionStorage } from "@/lib/session";
 
 const Index = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (sessionStorage.isAuthenticated()) {
+      navigate('/vendor-home');
+    }
+  }, [navigate]);
 
   const features = [
     {
@@ -50,18 +58,18 @@ const Index = () => {
               <div className="flex flex-wrap gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/register")}
+                  onClick={() => navigate("/vendor-login")}
                   className="bg-white text-primary hover:bg-white/90 shadow-lg"
                 >
-                  Register as Vendor
+                  Sign In
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => navigate("/vendor-register")}
                   className="border-white text-white hover:bg-white/10"
                 >
-                  View Dashboard
+                  Register as Vendor
                 </Button>
               </div>
             </div>
@@ -120,7 +128,7 @@ const Index = () => {
           </p>
           <Button
             size="lg"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/vendor-register")}
             className="shadow-primary"
           >
             Start Registration Now

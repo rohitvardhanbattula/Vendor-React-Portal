@@ -1,0 +1,83 @@
+_schema-version: "3.2"
+ID: vendor-portal-ui
+version: 1.0.0
+description: "Vendor Portal React Application"
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npm run build
+
+modules:
+  # Application Router Module
+  - name: vendor-portal-approuter
+    type: approuter.nodejs
+    path: approuter
+    parameters:
+      disk-quota: 512M
+      memory: 512M
+    properties:
+      CORS:
+        - uriPattern: .*
+          allowedOrigin:
+            - host: '*'
+          allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+          allowedHeaders:
+            - '*'
+          exposeHeaders:
+            - '*'
+    requires:
+      - name: vendor-portal-destination
+    build-parameters:
+      builder: npm
+      ignore:
+        - default-*.json
+        - .gitignore
+        - package-lock.json
+
+  # UI Module (React App)
+  - name: vendor-portal-ui
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+        - mkdir -p approuter/webapp
+        - cp -r dist/* approuter/webapp/
+      supported-platforms: []
+      build-result: dist
+
+resources:
+  # Destination Service
+  - name: vendor-portal-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: vendorportaldest
+                Description: Vendor Portal Backend Destination
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                # Update this URL with your actual backend URL
+                URL: ~{vendorportaldest-url}
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    properties:
+      vendorportaldest-url: ${vcap.services.vendorportaldest.credentials.url}
