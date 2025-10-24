@@ -13,8 +13,10 @@ applications:
         [
           {
             "name": "vendorportaldest",
-            "url": "YOUR_BACKEND_URL_HERE",
-            "forwardAuthToken": false
+            "url": "https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com",
+            "forwardAuthToken": true,
+            "authenticationType": OAuth2UserTokenExchange
+
           }
         ]
     services:

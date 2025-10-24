@@ -1,12 +1,12 @@
 {
-  "welcomeFile": "/index.html",
+  "welcomeFile": "index.html",
   "authenticationMethod": "none",
   "routes": [
     {
       "source": "^/odata/(.*)$",
       "target": "/odata/$1",
       "destination": "vendorportaldest",
-      "authenticationType": "none",
+      "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {

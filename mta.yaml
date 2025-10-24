@@ -20,21 +20,6 @@ modules:
     parameters:
       disk-quota: 512M
       memory: 512M
-    properties:
-      CORS:
-        - uriPattern: .*
-          allowedOrigin:
-            - host: '*'
-          allowedMethods:
-            - GET
-            - POST
-            - PUT
-            - DELETE
-            - OPTIONS
-          allowedHeaders:
-            - '*'
-          exposeHeaders:
-            - '*'
     requires:
       - name: vendor-portal-destination
     build-parameters:
@@ -54,7 +39,7 @@ modules:
         - npm ci
         - npm run build
         - mkdir -p approuter/webapp
-        - cp -r dist/* approuter/webapp/
+        - cp -r dist/. approuter/webapp/
       supported-platforms: []
       build-result: dist
 
@@ -74,10 +59,8 @@ resources:
                 Description: Vendor Portal Backend Destination
                 Type: HTTP
                 ProxyType: Internet
-                Authentication: NoAuthentication
-                # Update this URL with your actual backend URL
-                URL: ~{vendorportaldest-url}
+                Authentication: OAuth2UserTokenExchange
+                URL: https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com
                 HTML5.DynamicDestination: true
                 HTML5.ForwardAuthToken: true
-    properties:
-      vendorportaldest-url: ${vcap.services.vendorportaldest.credentials.url}
+    

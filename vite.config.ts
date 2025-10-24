@@ -10,32 +10,32 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       '/odata': {
-        target: 'http://localhost:4004',
+        target: 'https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com/',
         changeOrigin: true,
         secure: false
       },
       '/uploadattachments': {
-        target: 'http://localhost:4004',
+        target: 'https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com/',
         changeOrigin: true,
         secure: false
       },
       '/fileextraction': {
-        target: 'http://localhost:4004',
+        target: 'https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com/',
         changeOrigin: true,
         secure: false
       },
       '/fetchGSTDetails': {
-        target: 'http://localhost:4004',
+        target: 'https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com/',
         changeOrigin: true,
         secure: false
       },
       '/downloadZip': {
-        target: 'http://localhost:4004',
+        target: 'https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com/',
         changeOrigin: true,
         secure: false
       },
       '/downloadFile': {
-        target: 'http://localhost:4004',
+        target: 'https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com/',
         changeOrigin: true,
         secure: false
       }
