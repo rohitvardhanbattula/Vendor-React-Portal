@@ -12,6 +12,7 @@ import { FileUploadStep } from './wizard/FileUploadStep';
 import { ReviewStep } from './wizard/ReviewStep';
 import { ProgressDialog } from './wizard/ProgressDialog';
 import { Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const STEPS = [
   { id: 1, title: 'Supplier Details' },
@@ -62,15 +63,17 @@ export function SupplierWizard() {
     setCurrentStep(1);
     setSupplierData({
       supplierName: '',
-      mainAddress: { street: '', city: '', postalCode: '', country: '' },
+      mainAddress: { street: '', city: '', postalCode: '', country: '',region:'' },
       primaryContact: { firstName: '', lastName: '', email: '', phone: '' },
-      categoryAndRegion: { category: '' },
-      additionalInfo: {}
+      categoryAndRegion: { category: '',region:'' },
+      additionalInfo: {details:''}
     });
     setUploadedFiles([]);
   };
 
   const handleSubmit = async () => {
+
+    const navigate = useNavigate();
     const session = sessionStorage.get();
     if (!session?.username) return;
 
@@ -97,7 +100,7 @@ export function SupplierWizard() {
     setProgressSteps({ supplier: 'idle', gst: 'inprogress' });
 
     try {
-      // Step 1: Extract text and validate GST FIRST
+      // Step 1: Extract text and validate GST
       const extractedText = await api.extractTextFromFile(uploadedFiles[0].file);
 
       const gstinRegex = /\b\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]\b/;
@@ -113,7 +116,7 @@ export function SupplierWizard() {
         setProgressSteps(prev => ({ ...prev, gst: 'failed' }));
       }
 
-      // Step 2: Save validation results
+      // Save validation results
       if (validationData && validationData.results.length > 0) {
         await Promise.all(
           validationData.results.map(result =>
@@ -128,20 +131,22 @@ export function SupplierWizard() {
         );
       }
 
+      // Step 2: Create supplier
+      setProgressSteps(prev => ({ ...prev, supplier: 'inprogress' }));
+      await api.createSupplierWithFiles(supplierData, session.username);
+
       // Step 3: Save extracted text
       if (extractedText) {
         await api.saveExtractedText(session.username, supplierData.supplierName, extractedText);
       }
-
-      // Step 4: Upload attachments BEFORE creating supplier
-      setProgressSteps(prev => ({ ...prev, supplier: 'inprogress' }));
+      console.log("hit");
+      // Step 4: Upload attachments
       if (uploadedFiles.length > 0) {
         const files = uploadedFiles.map(f => f.file);
         await api.uploadAttachments(supplierData.supplierName, session.username, files);
       }
 
-      // Step 5: Create supplier with all data
-      await api.createSupplierWithFiles(supplierData, session.username);
+      // All supplier steps done, mark as success
       setProgressSteps(prev => ({ ...prev, supplier: 'success' }));
 
       toast({
@@ -152,7 +157,9 @@ export function SupplierWizard() {
       setTimeout(() => {
         resetForm();
         setShowProgress(false);
+        navigate(`/suppliers/${encodeURIComponent(supplierData.supplierName)}`);
       }, 2000);
+      
     } catch (error: any) {
       toast({
         variant: 'destructive',

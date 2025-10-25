@@ -84,8 +84,8 @@ export interface GSTValidation {
 
 export interface ValidationRecord {
   field: string;
-  validationStatus: string;
-  validationRemarks: string;
+  status: string;
+  remarks: string;
   supplierName: string;
   username: string;
 }

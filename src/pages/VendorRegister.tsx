@@ -57,7 +57,7 @@ export default function VendorRegister() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to send OTP'
+        description: error.message
       });
     } finally {
       setLoading(false);

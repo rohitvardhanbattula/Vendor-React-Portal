@@ -4,15 +4,21 @@ const BASE_URL = '/odata/v4/supplier';
 
 export const api = {
   // Authentication
-  async sendOtp(email: string): Promise<string> {
+    async sendOtp(email: string): Promise<string> {
     const response = await fetch(`${BASE_URL}/sendOtp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
     });
+
     const data = await response.json();
-    return data.value || data;
-  },
+
+    if (!response.ok) {
+      throw new Error(data.error.message || 'An unknown error occurred');
+    }
+
+    return 'OTP sent successfully';
+},
 
   async verifyOtp(email: string, otp: string): Promise<{ success: boolean; message: string }> {
     const response = await fetch(`${BASE_URL}/verifyOtp`, {
@@ -31,7 +37,7 @@ export const api = {
       body: JSON.stringify({ firstName, lastName, email, username, password })
     });
     const data = await response.json();
-    return data.value || data;
+    return data;
   },
 
   async login(username: string, password: string): Promise<{ success: boolean, message: string }> {
@@ -210,22 +216,35 @@ export const api = {
   },
 
   async getValidationResults(supplierName: string, username: string) {
-    const response = await fetch(`${BASE_URL}/getValidationResults`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ supplierName, username })
-    });
-    const data = await response.json();
-    return data.value || [];
+    const sFilter = `$filter=supplierName eq '${encodeURIComponent(supplierName)}' and username eq '${encodeURIComponent(username)}'`;
+    
+    const sUrl = `${BASE_URL}/gst?${sFilter}`;
+
+    try {
+        const response = await fetch(sUrl);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch validation results. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        return data.value || [];
+
+    } catch (err) {
+        console.error("Error in getValidationResults:", err.message);
+        return []; 
+    }
   },
 
+  
+
   async saveExtractedText(username: string, suppliername: string, extractedGstin: string) {
-    const response = await fetch(`${BASE_URL}/saveextractedtext`, {
+    await fetch(`${BASE_URL}/saveextractedtext`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, suppliername, extractedGstin })
     });
-    return response.json();
   },
 
   async downloadAttachments(supplierName: string, username: string) {
@@ -239,7 +258,33 @@ export const api = {
     window.open(`/downloadZip/${supplierName}/${username}`, '_blank');
   },
 
-  async downloadFile(fileID: string) {
-    window.open(`/downloadFile/${fileID}`, '_blank');
-  }
+  async downloadFileFromContent(content, fileName, mediaType = 'application/octet-stream') {
+    let blob;
+
+    try {
+        if (typeof content === 'string' && content.startsWith('data:')) {
+            const response = await fetch(content);
+            blob = await response.blob();
+        } else if (content instanceof Blob) {
+            blob = content;
+        } else {
+            blob = new Blob([content], { type: mediaType });
+        }
+        const link = document.createElement('a');
+        
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        
+        link.download = fileName;
+        
+        document.body.appendChild(link);
+        link.click();
+        
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+    } catch (e) {
+        console.error("Error downloading file:", e);
+    }
+}
 };

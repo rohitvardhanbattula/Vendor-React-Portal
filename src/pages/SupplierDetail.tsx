@@ -28,7 +28,7 @@ export default function SupplierDetail() {
     }
 
     const decodedName = decodeURIComponent(name);
-    
+
     Promise.all([
       api.getSuppliers(session.username),
       api.getApprovals(decodedName, session.username),
@@ -231,7 +231,6 @@ export default function SupplierDetail() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>GST Validation Results</CardTitle>
-                  {getGSTStatusBadge(supplier.gstValidationStatus)}
                 </div>
                 <CardDescription>Automated validation of GST information against submitted documents</CardDescription>
               </CardHeader>
@@ -253,7 +252,7 @@ export default function SupplierDetail() {
                             <TableCell className="font-medium">{result.field}</TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
-                                {result.validationStatus === 'Success' ? (
+                                {result.status === 'Success' ? (
                                   <>
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                     <Badge variant="default" className="bg-green-600">Match</Badge>
@@ -266,7 +265,7 @@ export default function SupplierDetail() {
                                 )}
                               </div>
                             </TableCell>
-                            <TableCell className="text-sm">{result.validationRemarks || '-'}</TableCell>
+                            <TableCell className="text-sm">{result.remarks || '-'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -371,14 +370,18 @@ export default function SupplierDetail() {
                           <div>
                             <p className="font-medium">{file.fileName}</p>
                             <p className="text-sm text-muted-foreground">
-                              {file.fileSize ? `${(file.fileSize / 1024).toFixed(2)} KB` : 'Size unknown'}
+                              {file.filesize ? `${(file.filesize / 1024).toFixed(2)} KB` : 'Size unknown'}
                             </p>
                           </div>
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => api.downloadFile(file.ID)}
+                          onClick={() => {
+                            const fullDataUri = `data:${file.mimeType};base64,${file.content}`;
+
+                            api.downloadFileFromContent(fullDataUri, file.fileName);
+                          }}
                         >
                           <Download className="h-4 w-4 mr-2" />
                           Download
