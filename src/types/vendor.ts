@@ -72,10 +72,20 @@ export interface GSTValidationResult {
   field: string;
   status: 'Success' | 'Failed';
   remarks: string;
+  validationStatus?: string;
+  validationRemarks?: string;
 }
 
 export interface GSTValidation {
   results: GSTValidationResult[];
   overallStatus: 'Success' | 'Failed';
   remarks?: string;
+}
+
+export interface ValidationRecord {
+  field: string;
+  validationStatus: string;
+  validationRemarks: string;
+  supplierName: string;
+  username: string;
 }

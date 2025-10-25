@@ -94,9 +94,10 @@ export function SupplierWizard() {
     }
 
     setShowProgress(true);
-    setProgressSteps({ supplier: 'inprogress', gst: 'inprogress' });
+    setProgressSteps({ supplier: 'idle', gst: 'inprogress' });
 
     try {
+      // Step 1: Extract text and validate GST FIRST
       const extractedText = await api.extractTextFromFile(uploadedFiles[0].file);
 
       const gstinRegex = /\b\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]\b/;
@@ -112,6 +113,7 @@ export function SupplierWizard() {
         setProgressSteps(prev => ({ ...prev, gst: 'failed' }));
       }
 
+      // Step 2: Save validation results
       if (validationData && validationData.results.length > 0) {
         await Promise.all(
           validationData.results.map(result =>
@@ -126,17 +128,21 @@ export function SupplierWizard() {
         );
       }
 
-      await api.createSupplierWithFiles(supplierData, session.username);
-      setProgressSteps(prev => ({ ...prev, supplier: 'success' }));
-
+      // Step 3: Save extracted text
       if (extractedText) {
         await api.saveExtractedText(session.username, supplierData.supplierName, extractedText);
       }
 
+      // Step 4: Upload attachments BEFORE creating supplier
+      setProgressSteps(prev => ({ ...prev, supplier: 'inprogress' }));
       if (uploadedFiles.length > 0) {
         const files = uploadedFiles.map(f => f.file);
         await api.uploadAttachments(supplierData.supplierName, session.username, files);
       }
+
+      // Step 5: Create supplier with all data
+      await api.createSupplierWithFiles(supplierData, session.username);
+      setProgressSteps(prev => ({ ...prev, supplier: 'success' }));
 
       toast({
         title: 'Success',

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { sessionStorage } from '@/lib/session';
 import { api } from '@/lib/api';
-import { SupplierData, ApprovalComment } from '@/types/vendor';
+import { SupplierData, ApprovalComment, ValidationRecord } from '@/types/vendor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +17,7 @@ export default function SupplierDetail() {
   const [supplier, setSupplier] = useState<SupplierData | null>(null);
   const [approvals, setApprovals] = useState<ApprovalComment[]>([]);
   const [attachments, setAttachments] = useState<any[]>([]);
+  const [validationResults, setValidationResults] = useState<ValidationRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,12 +32,14 @@ export default function SupplierDetail() {
     Promise.all([
       api.getSuppliers(session.username),
       api.getApprovals(decodedName, session.username),
-      api.downloadAttachments(decodedName, session.username)
-    ]).then(([suppliers, approvalsData, attachmentsData]) => {
+      api.downloadAttachments(decodedName, session.username),
+      api.getValidationResults(decodedName, session.username)
+    ]).then(([suppliers, approvalsData, attachmentsData, validationData]) => {
       const found = suppliers.find(s => s.supplierName === decodedName);
       if (found) setSupplier(found);
       setApprovals(approvalsData);
       setAttachments(attachmentsData.value || []);
+      setValidationResults(validationData);
     }).finally(() => setLoading(false));
   }, [name, navigate]);
 
@@ -223,29 +226,67 @@ export default function SupplierDetail() {
           </TabsContent>
 
           {/* GST Validation Tab */}
-          <TabsContent value="gst">
+          <TabsContent value="gst" className="space-y-4">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>GST Validation Results</CardTitle>
                   {getGSTStatusBadge(supplier.gstValidationStatus)}
                 </div>
-                <CardDescription>Automated validation of GST information</CardDescription>
+                <CardDescription>Automated validation of GST information against submitted documents</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
+                {validationResults.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Field-by-Field Validation</h3>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Field</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Remarks</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {validationResults.map((result, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell className="font-medium">{result.field}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {result.validationStatus === 'Success' ? (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                    <Badge variant="default" className="bg-green-600">Match</Badge>
+                                  </>
+                                ) : (
+                                  <>
+                                    <XCircle className="h-4 w-4 text-red-600" />
+                                    <Badge variant="destructive">Mismatch</Badge>
+                                  </>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm">{result.validationRemarks || '-'}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+
                 {supplier.aiExtractedText && (
-                  <div className="mb-6 p-4 bg-muted rounded-lg">
-                    <p className="text-sm font-medium mb-2">Extracted GST Text:</p>
-                    <p className="text-sm font-mono whitespace-pre-wrap">{supplier.aiExtractedText}</p>
+                  <div className="p-4 bg-muted/50 rounded-lg border">
+                    <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Extracted GST Information:
+                    </p>
+                    <p className="text-sm font-mono whitespace-pre-wrap bg-background p-3 rounded">
+                      {supplier.aiExtractedText}
+                    </p>
                   </div>
                 )}
-                {supplier.gstValidationRemarks && (
-                  <div className="p-4 border rounded-lg">
-                    <p className="text-sm font-medium mb-2">Validation Remarks:</p>
-                    <p className="text-sm">{supplier.gstValidationRemarks}</p>
-                  </div>
-                )}
-                {!supplier.gstValidationStatus && (
+
+                {validationResults.length === 0 && !supplier.aiExtractedText && (
                   <p className="text-center text-muted-foreground py-8">
                     No GST validation data available
                   </p>

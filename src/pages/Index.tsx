@@ -42,24 +42,27 @@ const Index = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 gradient-hero opacity-90" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <div className="absolute inset-0 gradient-hero animate-gradient" />
+        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:40px_40px]" />
         <div className="relative max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
-              <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <div className="inline-block mb-6 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                <span className="text-sm font-medium">✨ Enterprise-Grade Vendor Management</span>
+              </div>
+              <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight">
                 Vendor Portal
-                <span className="block text-white/90 mt-2">Registration System</span>
+                <span className="block text-white/90 mt-2 text-4xl lg:text-5xl">Registration System</span>
               </h1>
-              <p className="text-xl mb-8 text-white/90">
-                Streamline your vendor onboarding process with our enterprise-grade
-                registration platform. Integrated with CAPM backend for seamless operations.
+              <p className="text-xl mb-8 text-white/90 leading-relaxed">
+                Streamline your vendor onboarding with intelligent automation, GST validation,
+                and comprehensive approval workflows powered by CAPM backend.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button
                   size="lg"
                   onClick={() => navigate("/vendor-login")}
-                  className="bg-white text-primary hover:bg-white/90 shadow-lg"
+                  className="bg-white text-primary hover:bg-white/90 shadow-lg hover:shadow-xl transition-all text-lg px-10 py-6"
                 >
                   Sign In
                 </Button>
@@ -67,7 +70,7 @@ const Index = () => {
                   size="lg"
                   variant="outline"
                   onClick={() => navigate("/vendor-register")}
-                  className="border-white text-white hover:bg-white/10"
+                  className="border-white text-white hover:bg-white/10 backdrop-blur-sm text-lg px-10 py-6"
                 >
                   Register as Vendor
                 </Button>
@@ -75,14 +78,15 @@ const Index = () => {
             </div>
             <div className="hidden lg:block">
               <div className="relative">
+                <div className="absolute -inset-4 gradient-accent opacity-20 blur-3xl rounded-3xl" />
                 <img
                   src={heroImage}
                   alt="Professional business environment"
-                  className="rounded-lg shadow-2xl"
+                  className="relative rounded-2xl shadow-2xl border border-white/20"
                 />
-                <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-lg shadow-xl">
-                  <div className="text-3xl font-bold text-primary">500+</div>
-                  <div className="text-sm text-muted-foreground">Registered Vendors</div>
+                <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-2xl border border-primary/10">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">500+</div>
+                  <div className="text-sm text-muted-foreground font-medium">Registered Vendors</div>
                 </div>
               </div>
             </div>
@@ -91,20 +95,27 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-b from-background to-muted/30">
+      <section className="py-20 bg-gradient-to-b from-background via-primary/5 to-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <div className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full">
+              <span className="text-sm font-semibold text-primary">Features</span>
+            </div>
             <h2 className="text-4xl font-bold mb-4">Why Choose Our Platform?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Enterprise-ready vendor management with modern technology stack
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature) => (
-              <Card key={feature.title} className="gradient-card border-0 shadow-md hover:shadow-lg transition-shadow">
+            {features.map((feature, idx) => (
+              <Card 
+                key={feature.title} 
+                className="gradient-card border-primary/10 shadow-lg hover:shadow-primary transition-all hover:-translate-y-2"
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
                 <CardHeader>
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                    <feature.icon className="w-6 h-6 text-primary" />
+                  <div className="w-14 h-14 gradient-hero rounded-xl flex items-center justify-center mb-4 shadow-primary">
+                    <feature.icon className="w-7 h-7 text-white" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
                 </CardHeader>
@@ -120,16 +131,17 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-muted/50">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-accent opacity-10" />
+        <div className="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
             Join hundreds of vendors already using our platform for seamless business operations.
           </p>
           <Button
             size="lg"
             onClick={() => navigate("/vendor-register")}
-            className="shadow-primary"
+            className="shadow-primary hover:shadow-accent transition-all text-lg px-10 py-6"
           >
             Start Registration Now
           </Button>

@@ -209,6 +209,16 @@ export const api = {
     return response;
   },
 
+  async getValidationResults(supplierName: string, username: string) {
+    const response = await fetch(`${BASE_URL}/getValidationResults`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ supplierName, username })
+    });
+    const data = await response.json();
+    return data.value || [];
+  },
+
   async saveExtractedText(username: string, suppliername: string, extractedGstin: string) {
     const response = await fetch(`${BASE_URL}/saveextractedtext`, {
       method: 'POST',

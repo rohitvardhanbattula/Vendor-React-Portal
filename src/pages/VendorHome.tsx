@@ -24,19 +24,25 @@ export default function VendorHome() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <header className="border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <header className="border-b bg-card/80 backdrop-blur-lg supports-[backdrop-filter]:bg-card/80 shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-primary" />
+            <div className="h-12 w-12 rounded-xl gradient-hero flex items-center justify-center shadow-primary">
+              <Building2 className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold">Supplier Management</h1>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Supplier Registration
+              </h1>
+              <p className="text-xs text-muted-foreground">Welcome, {user.firstName} {user.lastName}</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
               onClick={() => navigate('/approvers')}
+              className="border-primary/20 hover:border-primary/40"
             >
               <Users className="mr-2 h-4 w-4" />
               Approvers
@@ -44,6 +50,7 @@ export default function VendorHome() {
             <Button
               variant="outline"
               onClick={() => navigate('/suppliers')}
+              className="border-accent/20 hover:border-accent/40"
             >
               <List className="mr-2 h-4 w-4" />
               All Suppliers

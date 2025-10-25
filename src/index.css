@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 217 33% 17%;
 
     --card: 0 0% 100%;
@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 217 33% 17%;
 
-    --primary: 217 91% 60%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 214 95% 93%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 217 33% 17%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 173 80% 40%;
+    --accent: 142 76% 36%;
     --accent-foreground: 0 0% 100%;
     
     --success: 142 76% 36%;
@@ -40,17 +40,19 @@ All colors MUST be HSL.
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(173 80% 40%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(142 76% 36%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(221 83% 53% / 0.05) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(173 80% 40%) 100%);
     
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    --shadow-primary: 0 10px 25px -5px hsl(217 91% 60% / 0.3);
+    --shadow-sm: 0 1px 2px 0 hsl(221 83% 53% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(221 83% 53% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(221 83% 53% / 0.15);
+    --shadow-primary: 0 10px 30px -5px hsl(221 83% 53% / 0.3);
+    --shadow-accent: 0 10px 30px -5px hsl(142 76% 36% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -72,7 +74,7 @@ All colors MUST be HSL.
     --popover: 217 33% 15%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217 33% 20%;
@@ -81,23 +83,25 @@ All colors MUST be HSL.
     --muted: 217 33% 20%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 173 80% 40%;
+    --accent: 142 76% 36%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 63% 50%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217 33% 20%;
     --input: 217 33% 20%;
-    --ring: 217 91% 60%;
+    --ring: 221 83% 53%;
     
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(173 80% 40%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(142 76% 36%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(217 33% 15%) 0%, hsl(217 33% 12%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(173 80% 40%) 100%);
     
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
-    --shadow-primary: 0 10px 25px -5px hsl(217 91% 60% / 0.4);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+    --shadow-primary: 0 10px 30px -5px hsl(221 83% 53% / 0.5);
+    --shadow-accent: 0 10px 30px -5px hsl(142 76% 36% / 0.5);
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -134,7 +138,26 @@ All colors MUST be HSL.
     background: var(--gradient-card);
   }
   
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+  
   .shadow-primary {
     box-shadow: var(--shadow-primary);
+  }
+  
+  .shadow-accent {
+    box-shadow: var(--shadow-accent);
+  }
+  
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+  }
+  
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 }
