@@ -9,9 +9,10 @@ interface Props {
   files: UploadedFile[];
   onFilesChange: (files: UploadedFile[]) => void;
   onNext: () => void;
+  onBack: () => void;
 }
 
-export function FileUploadStep({ files, onFilesChange, onNext }: Props) {
+export function FileUploadStep({ files, onFilesChange, onNext, onBack }: Props) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -122,7 +123,8 @@ export function FileUploadStep({ files, onFilesChange, onNext }: Props) {
         </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onBack}>Back</Button>
         <Button onClick={handleNext}>Next</Button>
       </div>
     </div>

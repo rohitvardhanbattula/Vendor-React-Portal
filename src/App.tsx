@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import VendorRegister from "./pages/VendorRegister";
 import VendorHome from "./pages/VendorHome";
+import Suppliers from "./pages/Suppliers";
+import SupplierDetail from "./pages/SupplierDetail";
+import Approvers from "./pages/Approvers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,10 +21,13 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/vendor-login" element={<Login />} />
-      <Route path="/vendor-register" element={<VendorRegister />} />
-      <Route path="/vendor-home" element={<VendorHome />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/vendor-login" element={<Login />} />
+          <Route path="/vendor-register" element={<VendorRegister />} />
+          <Route path="/vendor-home" element={<VendorHome />} />
+          <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/suppliers/:name" element={<SupplierDetail />} />
+          <Route path="/approvers" element={<Approvers />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

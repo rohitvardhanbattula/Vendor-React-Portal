@@ -5,15 +5,11 @@ import { api } from '@/lib/api';
 import { SupplierWizard } from '@/components/vendor/SupplierWizard';
 import { Button } from '@/components/ui/button';
 import { MenuButton } from '@/components/vendor/MenuButton';
-import { Users, Building2 } from 'lucide-react';
-import { ApproverDialog } from '@/components/vendor/ApproverDialog';
-import { SupplierListDialog } from '@/components/vendor/SupplierListDialog';
+import { Users, Building2, List } from 'lucide-react';
 
 export default function VendorHome() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
-  const [showApprovers, setShowApprovers] = useState(false);
-  const [showSuppliers, setShowSuppliers] = useState(false);
 
   useEffect(() => {
     const session = sessionStorage.get();
@@ -40,17 +36,17 @@ export default function VendorHome() {
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
-              onClick={() => setShowApprovers(true)}
+              onClick={() => navigate('/approvers')}
             >
               <Users className="mr-2 h-4 w-4" />
               Approvers
             </Button>
             <Button
               variant="outline"
-              onClick={() => setShowSuppliers(true)}
+              onClick={() => navigate('/suppliers')}
             >
-              <Building2 className="mr-2 h-4 w-4" />
-              Suppliers
+              <List className="mr-2 h-4 w-4" />
+              All Suppliers
             </Button>
             <MenuButton user={user} />
           </div>
@@ -60,9 +56,6 @@ export default function VendorHome() {
       <main className="container mx-auto px-4 py-8">
         <SupplierWizard />
       </main>
-
-      <ApproverDialog open={showApprovers} onOpenChange={setShowApprovers} />
-      <SupplierListDialog open={showSuppliers} onOpenChange={setShowSuppliers} />
     </div>
   );
 }

@@ -231,6 +231,7 @@ export function SupplierWizard() {
                 data={supplierData}
                 onUpdate={updateSupplierData}
                 onNext={() => setCurrentStep(3)}
+                onBack={() => setCurrentStep(1)}
               />
             )}
             {currentStep === 3 && (
@@ -238,6 +239,7 @@ export function SupplierWizard() {
                 data={supplierData}
                 onUpdate={updateSupplierData}
                 onNext={() => setCurrentStep(4)}
+                onBack={() => setCurrentStep(2)}
               />
             )}
             {currentStep === 4 && (
@@ -245,6 +247,7 @@ export function SupplierWizard() {
                 files={uploadedFiles}
                 onFilesChange={setUploadedFiles}
                 onNext={() => setCurrentStep(5)}
+                onBack={() => setCurrentStep(3)}
               />
             )}
             {currentStep === 5 && (
@@ -252,6 +255,7 @@ export function SupplierWizard() {
                 data={supplierData}
                 files={uploadedFiles}
                 onSubmit={handleSubmit}
+                onBack={() => setCurrentStep(4)}
               />
             )}
           </div>

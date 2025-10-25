@@ -7,9 +7,10 @@ interface Props {
   data: SupplierData;
   files: UploadedFile[];
   onSubmit: () => void;
+  onBack: () => void;
 }
 
-export function ReviewStep({ data, files, onSubmit }: Props) {
+export function ReviewStep({ data, files, onSubmit, onBack }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
@@ -112,9 +113,10 @@ export function ReviewStep({ data, files, onSubmit }: Props) {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? 'Creating Supplier...' : 'Create Supplier'}
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onBack}>Back</Button>
+        <Button onClick={handleSubmit} disabled={isSubmitting} size="lg">
+          {isSubmitting ? 'Submitting...' : 'Submit Supplier'}
         </Button>
       </div>
     </div>

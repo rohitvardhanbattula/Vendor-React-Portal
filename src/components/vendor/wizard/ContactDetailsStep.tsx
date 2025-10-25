@@ -9,9 +9,10 @@ interface Props {
   data: SupplierData;
   onUpdate: (updates: Partial<SupplierData>) => void;
   onNext: () => void;
+  onBack: () => void;
 }
 
-export function ContactDetailsStep({ data, onUpdate, onNext }: Props) {
+export function ContactDetailsStep({ data, onUpdate, onNext, onBack }: Props) {
   const { toast } = useToast();
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
@@ -90,7 +91,8 @@ export function ContactDetailsStep({ data, onUpdate, onNext }: Props) {
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onBack}>Back</Button>
         <Button onClick={handleNext}>Next</Button>
       </div>
     </div>
