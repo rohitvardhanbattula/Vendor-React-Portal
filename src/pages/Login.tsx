@@ -32,7 +32,7 @@ export default function Login() {
     try {
       const result = await api.login(username, password);
       
-      if (result === 'Login successful') {
+      if (result.success) { // <--- FIX 1: Check the 'success' property
         const userInfo = await api.getUserInfo(username);
         sessionStorage.set({
           username,
@@ -51,7 +51,7 @@ export default function Login() {
         toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: result
+          description: result.message // <--- FIX 2: Use the 'message' property
         });
       }
     } catch (error) {

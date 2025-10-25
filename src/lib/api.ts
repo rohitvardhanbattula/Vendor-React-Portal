@@ -34,14 +34,14 @@ export const api = {
     return data.value || data;
   },
 
-  async login(username: string, password: string): Promise<string> {
+  async login(username: string, password: string): Promise<{ success: boolean, message: string }> {
     const response = await fetch(`${BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
     const data = await response.json();
-    return data.value || data;
+    return data;
   },
 
   async getUserInfo(username: string): Promise<User> {
@@ -206,7 +206,7 @@ export const api = {
         validationRemarks
       })
     });
-    return response.json();
+    return response;
   },
 
   async saveExtractedText(username: string, suppliername: string, extractedGstin: string) {

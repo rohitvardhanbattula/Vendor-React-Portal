@@ -67,7 +67,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext }: Props) {
           <Textarea
             id="additionalInfo"
             rows={4}
-            value={data.additionalInfo.details}
+            value={data.additionalInfo.details || ''}
             onChange={(e) =>
               onUpdate({ additionalInfo: { details: e.target.value } })
             }

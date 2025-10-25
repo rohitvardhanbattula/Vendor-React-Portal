@@ -43,7 +43,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
             id="supplierName"
             value={data.supplierName}
             onChange={(e) => {
-              onUpdate({ supplierName: e.target.value });
+              onUpdate({ supplierName: e.target.value  });
               setErrors(prev => ({ ...prev, supplierName: false }));
             }}
             className={errors.supplierName ? 'border-destructive' : ''}
@@ -55,7 +55,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="street">Street</Label>
           <Input
             id="street"
-            value={data.mainAddress.street}
+            value={data.mainAddress.street || ''}
             onChange={(e) =>
               onUpdate({ mainAddress: { ...data.mainAddress, street: e.target.value } })
             }
@@ -66,7 +66,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="line2">Line 2</Label>
           <Input
             id="line2"
-            value={data.mainAddress.line2}
+            value={data.mainAddress.line2 || ''}
             onChange={(e) =>
               onUpdate({ mainAddress: { ...data.mainAddress, line2: e.target.value } })
             }
@@ -77,7 +77,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="line3">Line 3</Label>
           <Input
             id="line3"
-            value={data.mainAddress.line3}
+            value={data.mainAddress.line3 || ''}
             onChange={(e) =>
               onUpdate({ mainAddress: { ...data.mainAddress, line3: e.target.value } })
             }
@@ -88,7 +88,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="city">City</Label>
           <Input
             id="city"
-            value={data.mainAddress.city}
+            value={data.mainAddress.city || ''}
             onChange={(e) =>
               onUpdate({ mainAddress: { ...data.mainAddress, city: e.target.value } })
             }
@@ -99,7 +99,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="postalCode">Postal Code</Label>
           <Input
             id="postalCode"
-            value={data.mainAddress.postalCode}
+            value={data.mainAddress.postalCode || ''}
             onChange={(e) =>
               onUpdate({ mainAddress: { ...data.mainAddress, postalCode: e.target.value } })
             }
@@ -110,7 +110,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="country" className="required">Country</Label>
           <Input
             id="country"
-            value={data.mainAddress.country}
+            value={data.mainAddress.country || ''}
             onChange={(e) => {
               onUpdate({ mainAddress: { ...data.mainAddress, country: e.target.value } });
               setErrors(prev => ({ ...prev, country: false }));
@@ -124,7 +124,7 @@ export function SupplierDetailsStep({ data, onUpdate, onNext }: Props) {
           <Label htmlFor="region">Region</Label>
           <Input
             id="region"
-            value={data.mainAddress.region}
+            value={data.mainAddress.region || ''}
             onChange={(e) =>
               onUpdate({ mainAddress: { ...data.mainAddress, region: e.target.value } })
             }

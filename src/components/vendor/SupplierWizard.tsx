@@ -30,7 +30,8 @@ export function SupplierWizard() {
       street: '',
       city: '',
       postalCode: '',
-      country: ''
+      country: '',
+      region: ''
     },
     primaryContact: {
       firstName: '',
@@ -39,9 +40,12 @@ export function SupplierWizard() {
       phone: ''
     },
     categoryAndRegion: {
-      category: ''
+      category: '',
+      region: ''
     },
-    additionalInfo: {}
+    additionalInfo: {
+      details: ''
+    }
   });
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [showProgress, setShowProgress] = useState(false);
@@ -94,7 +98,7 @@ export function SupplierWizard() {
 
     try {
       const extractedText = await api.extractTextFromFile(uploadedFiles[0].file);
-      
+
       const gstinRegex = /\b\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]\b/;
       const gstinMatch = extractedText.match(gstinRegex);
       const gstin = gstinMatch ? gstinMatch[0] : null;
@@ -154,14 +158,14 @@ export function SupplierWizard() {
   };
 
   const validateGSTData = async (gstData: any, supplierData: SupplierData): Promise<GSTValidation> => {
-    const normalizeString = (str: string) => 
+    const normalizeString = (str: string) =>
       str.toLowerCase().replace(/[\s.,]/g, '');
 
     const results = [];
     let overallStatus: 'Success' | 'Failed' = 'Success';
 
-    const isNameMatch = normalizeString(gstData.gstTradeName || '') === 
-                        normalizeString(supplierData.supplierName);
+    const isNameMatch = normalizeString(gstData.gstTradeName || '') ===
+      normalizeString(supplierData.supplierName);
     results.push({
       field: 'Trade Name',
       status: isNameMatch ? 'Success' as const : 'Failed' as const,
@@ -191,13 +195,12 @@ export function SupplierWizard() {
                 <div key={step.id} className="flex items-center flex-1">
                   <div className="flex flex-col items-center">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
-                        currentStep > step.id
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${currentStep > step.id
                           ? 'bg-primary text-primary-foreground'
                           : currentStep === step.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground'
-                      }`}
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground'
+                        }`}
                     >
                       {currentStep > step.id ? <Check className="h-5 w-5" /> : step.id}
                     </div>
@@ -205,9 +208,8 @@ export function SupplierWizard() {
                   </div>
                   {index < STEPS.length - 1 && (
                     <div
-                      className={`h-0.5 flex-1 mx-4 transition-colors ${
-                        currentStep > step.id ? 'bg-primary' : 'bg-muted'
-                      }`}
+                      className={`h-0.5 flex-1 mx-4 transition-colors ${currentStep > step.id ? 'bg-primary' : 'bg-muted'
+                        }`}
                     />
                   )}
                 </div>
