@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+/*import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sessionStorage } from '@/lib/session';
 import { api } from '@/lib/api';
@@ -266,6 +266,283 @@ export default function Approvers() {
           </CardContent>
         </Card>
       </main>
+    </div>
+  );
+}*/
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { sessionStorage } from '@/lib/session';
+import { api } from '@/lib/api';
+import { Approver } from '@/types/vendor';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ArrowLeft, Plus, Trash2, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+export default function Approvers() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [approvers, setApprovers] = useState<Approver[]>([]);
+  const [selectedApprovers, setSelectedApprovers] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [newApprover, setNewApprover] = useState<Approver>({
+    name: '',
+    email: '',
+    country: '',
+    level: ''
+  });
+
+  useEffect(() => {
+    const session = sessionStorage.get();
+    if (!session?.username) {
+      navigate('/vendor-login');
+      return;
+    }
+
+    loadApprovers();
+  }, [navigate]);
+
+  const loadApprovers = () => {
+    setLoading(true);
+    api.getApprovers()
+      .then(setApprovers)
+      .finally(() => setLoading(false));
+  };
+
+  const handleSelectApprover = (approver: Approver, checked: boolean) => {
+    const key = `${approver.name}-${approver.country}-${approver.level}`;
+    const newSelected = new Set(selectedApprovers);
+    if (checked) {
+      newSelected.add(key);
+    } else {
+      newSelected.delete(key);
+    }
+    setSelectedApprovers(newSelected);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedApprovers.size === 0) return;
+
+    const deletePromises = Array.from(selectedApprovers).map(key => {
+      const [name, country, level] = key.split('-');
+      return api.deleteApprover(name, country, level);
+    });
+
+    try {
+      await Promise.all(deletePromises);
+      toast({
+        title: 'Success',
+        description: `Deleted ${selectedApprovers.size} approver(s)`
+      });
+      setSelectedApprovers(new Set());
+      loadApprovers();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to delete approvers'
+      });
+    }
+  };
+
+  const handleAddApprover = async () => {
+    if (!newApprover.name || !newApprover.email || !newApprover.country || !newApprover.level) {
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Please fill in all fields'
+      });
+      return;
+    }
+
+    try {
+      await api.addApprover(newApprover);
+      toast({
+        title: 'Success',
+        description: 'Approver added successfully'
+      });
+      setShowAddDialog(false);
+      setNewApprover({ name: '', email: '', country: '', level: '' });
+      loadApprovers();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to add approver'
+      });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center p-4">
+      {/* Main Container - matches ApproverListModal outer card */}
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+        
+        {/* ✨ Styled Header (same as ApproverListModal) ✨ */}
+        <div className="!bg-gradient-to-r from-[#2b4d8a] via-[#3e6ab3] to-[#2b4d8a] px-4 py-2 border-b-4 border-blue-500 rounded-lg mb-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/vendor-home')}
+                className="text-white hover:text-blue-200 transition-colors"
+                aria-label="Back to home"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <h1 className="text-2xl font-bold text-white tracking-tight">
+                Approver List
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {selectedApprovers.size > 0 && (
+                <button
+                  onClick={handleDeleteSelected}
+                  className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg font-semibold transition-shadow duration-200 shadow-md hover:shadow-lg"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete ({selectedApprovers.size})
+                </button>
+              )}
+
+              <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+                <DialogTrigger asChild>
+                  <button className="flex items-center gap-1.5 bg-[#1a365d] hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-semibold transition-shadow duration-200 shadow-md hover:shadow-lg">
+                    <Plus className="h-4 w-4" />
+                    Add Approver
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md rounded-2xl border border-gray-200 p-6">
+                  <DialogHeader>
+                    <DialogTitle>Add New Approver</DialogTitle>
+                    <DialogDescription>
+                      Enter the details for the new approver
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <Input
+                        id="name"
+                        value={newApprover.name}
+                        onChange={(e) => setNewApprover({ ...newApprover, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newApprover.email}
+                        onChange={(e) => setNewApprover({ ...newApprover, email: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country</Label>
+                      <Input
+                        id="country"
+                        value={newApprover.country}
+                        onChange={(e) => setNewApprover({ ...newApprover, country: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="level">Level</Label>
+                      <Input
+                        id="level"
+                        value={newApprover.level}
+                        onChange={(e) => setNewApprover({ ...newApprover, level: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <button
+                      onClick={() => setShowAddDialog(false)}
+                      className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-xl font-semibold transition-all duration-200"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleAddApprover}
+                      className="bg-[#1a365d] hover:bg-[#153052] text-white px-4 py-2 rounded-xl font-semibold transition-all duration-200"
+                    >
+                      Add Approver
+                    </button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="p-6">
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-[#e0e7ff]">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-[#1a365d] uppercase tracking-wider w-12">
+                      <Checkbox
+                        checked={selectedApprovers.size === approvers.length && approvers.length > 0}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedApprovers(new Set(approvers.map(a => 
+                              `${a.name}-${a.country}-${a.level}`
+                            )));
+                          } else {
+                            setSelectedApprovers(new Set());
+                          }
+                        }}
+                      />
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-[#1a365d] uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-[#1a365d] uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-[#1a365d] uppercase tracking-wider">Country</th>
+                    <th className="px-6 py-3 text-left text-xs font-bold text-[#1a365d] uppercase tracking-wider">Level</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {approvers.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                        No approvers found. Add your first approver to get started.
+                      </td>
+                    </tr>
+                  ) : (
+                    approvers.map((approver, idx) => {
+                      const key = `${approver.name}-${approver.country}-${approver.level}`;
+                      return (
+                        <tr key={idx} className="hover:bg-blue-50 transition-colors duration-200">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Checkbox
+                              checked={selectedApprovers.has(key)}
+                              onCheckedChange={(checked) => 
+                                handleSelectApprover(approver, checked as boolean)
+                              }
+                            />
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{approver.name}</td>
+                          <td className="px-6 py-4 text-sm text-gray-900">{approver.email}</td>
+                          <td className="px-6 py-4 text-sm text-gray-900">{approver.country}</td>
+                          <td className="px-6 py-4 text-sm text-gray-900">Level {approver.level}</td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
