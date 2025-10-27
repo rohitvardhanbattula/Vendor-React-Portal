@@ -160,4 +160,28 @@ All colors MUST be HSL.
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+
+  .blueHeaderToolbar1 {
+  background-color: #0a6ed1 !important; /* SAP blue */
+  color: white !important;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.blueHeaderToolbar {
+  background-color: #0a6ed1 !important;
+  color: white !important;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem; /* ← keep this for spacer alignment */
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 }

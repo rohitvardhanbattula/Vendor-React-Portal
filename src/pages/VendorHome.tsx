@@ -6,7 +6,8 @@ import { SupplierWizard } from '@/components/vendor/SupplierWizard';
 import { MenuButton } from '@/components/vendor/MenuButton';
 import { Users, Building2, List } from 'lucide-react';
 import { useAutoLogout } from '@/hooks/use-auto-logout';
-
+import companyLogo from '../assets/companylogo.png';
+ 
 export default function VendorHome() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
@@ -17,14 +18,23 @@ export default function VendorHome() {
       navigate('/vendor-login');
       return;
     }
-
+ 
     api.getUserInfo(session.username).then(setUser);
   }, [navigate]);
-
+ 
   if (!user) return null;
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      {/* ✅ SAP-Style Blue Header Toolbar (from your spec) */}
+      <div className="blueHeaderToolbar1">
+        <div style={{ width: '0.5rem' }}></div>
+        <img
+          src={companyLogo}
+          alt="Company Logo"
+          style={{ height: '2rem',}}
+        />
+      </div>
       {/* Styled Header (matching Header.jsx) */}
       <header className="sticky top-0 z-50 bg-gray-100 shadow-md border-b-4 border-blue-500">
         <div className="px-5 md:px-8 py-3">
@@ -41,38 +51,38 @@ export default function VendorHome() {
                 <p className="text-xs text-muted-foreground">Welcome, {user.firstName} {user.lastName}</p>
               </div>
             </div>
-
+ 
             {/* Action Buttons (styled like Header.jsx) */}
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => navigate('/approvers')}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium 
-                  text-white bg-[#1a365d] hover:bg-[#162a4b] 
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
+                  text-white bg-[#1a365d] hover:bg-[#162a4b]
                   rounded-lg shadow-md border-b-4 border-blue-500 transition-all duration-200
                   focus:outline-none focus:ring-1 focus:ring-[#1a365d] focus:shadow-[0_0_0_3px_rgba(26,54,93,0.2)]"
               >
                 <Users className="w-4 h-4" />
                 Approvers
               </button>
-
+ 
               <button
                 onClick={() => navigate('/suppliers')}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium 
-                  text-white bg-[#1a365d] hover:bg-[#162a4b] 
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium
+                  text-white bg-[#1a365d] hover:bg-[#162a4b]
                   rounded-lg shadow-md border-b-4 border-blue-500 transition-all duration-200
                   focus:outline-none focus:ring-1 focus:ring-[#1a365d] focus:shadow-[0_0_0_3px_rgba(26,54,93,0.2)]"
               >
                 <List className="w-4 h-4" />
                 All Suppliers
               </button>
-
+ 
               {/* Keep MenuButton for logout/profile, but you could replace with plain Logout if preferred */}
               <MenuButton user={user} />
             </div>
           </div>
         </div>
       </header>
-
+ 
       <main className="container mx-auto px-4 py-8">
         <SupplierWizard />
       </main>
