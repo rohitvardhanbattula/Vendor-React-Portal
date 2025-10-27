@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { sessionStorage } from '@/lib/session';
 import { useToast } from '@/hooks/use-toast';
  
-const INACTIVITY_TIMEOUT = 20*60* 1000; // 20 minutes in milliseconds
+const INACTIVITY_TIMEOUT = 20*60* 1000;
  
 export function useAutoLogout() {
   const navigate = useNavigate();

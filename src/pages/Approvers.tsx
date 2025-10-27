@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, Plus, Trash2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
+ 
 export default function Approvers() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -26,24 +26,24 @@ export default function Approvers() {
     country: '',
     level: ''
   });
-
+ 
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username) {
       navigate('/vendor-login');
       return;
     }
-
+ 
     loadApprovers();
   }, [navigate]);
-
+ 
   const loadApprovers = () => {
     setLoading(true);
     api.getApprovers()
       .then(setApprovers)
       .finally(() => setLoading(false));
   };
-
+ 
   const handleSelectApprover = (approver: Approver, checked: boolean) => {
     const key = `${approver.name}-${approver.country}-${approver.level}`;
     const newSelected = new Set(selectedApprovers);
@@ -54,15 +54,15 @@ export default function Approvers() {
     }
     setSelectedApprovers(newSelected);
   };
-
+ 
   const handleDeleteSelected = async () => {
     if (selectedApprovers.size === 0) return;
-
+ 
     const deletePromises = Array.from(selectedApprovers).map(key => {
       const [name, country, level] = key.split('-');
       return api.deleteApprover(name, country, level);
     });
-
+ 
     try {
       await Promise.all(deletePromises);
       toast({
@@ -79,7 +79,7 @@ export default function Approvers() {
       });
     }
   };
-
+ 
   const handleAddApprover = async () => {
     if (!newApprover.name || !newApprover.email || !newApprover.country || !newApprover.level) {
       toast({
@@ -89,7 +89,7 @@ export default function Approvers() {
       });
       return;
     }
-
+ 
     try {
       await api.addApprover(newApprover);
       toast({
@@ -107,7 +107,7 @@ export default function Approvers() {
       });
     }
   };
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
       <header className="border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
@@ -120,7 +120,7 @@ export default function Approvers() {
           <div className="w-24" />
         </div>
       </header>
-
+ 
       <main className="container mx-auto px-4 py-8">
         <Card className="shadow-lg">
           <CardHeader>
@@ -216,7 +216,7 @@ export default function Approvers() {
                           checked={selectedApprovers.size === approvers.length && approvers.length > 0}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              setSelectedApprovers(new Set(approvers.map(a => 
+                              setSelectedApprovers(new Set(approvers.map(a =>
                                 `${a.name}-${a.country}-${a.level}`
                               )));
                             } else {
@@ -246,7 +246,7 @@ export default function Approvers() {
                             <TableCell>
                               <Checkbox
                                 checked={selectedApprovers.has(key)}
-                                onCheckedChange={(checked) => 
+                                onCheckedChange={(checked) =>
                                   handleSelectApprover(approver, checked as boolean)
                                 }
                               />
@@ -269,7 +269,7 @@ export default function Approvers() {
     </div>
   );
 }*/
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sessionStorage } from '@/lib/session';
 import { api } from '@/lib/api';
@@ -279,9 +279,9 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ArrowLeft, Plus, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Loader2, Mail } from 'lucide-react'; // ✅ Added Mail icon
 import { useToast } from '@/hooks/use-toast';
-
+ 
 export default function Approvers() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -295,24 +295,36 @@ export default function Approvers() {
     country: '',
     level: ''
   });
-
+  const [searchTerm, setSearchTerm] = useState(''); // ✅ New search state
+ 
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username) {
       navigate('/vendor-login');
       return;
     }
-
     loadApprovers();
   }, [navigate]);
-
+ 
   const loadApprovers = () => {
     setLoading(true);
     api.getApprovers()
       .then(setApprovers)
       .finally(() => setLoading(false));
   };
-
+ 
+  // ✅ Filter approvers based on search term
+  const filteredApprovers = useMemo(() => {
+    if (!searchTerm) return approvers;
+    const term = searchTerm.toLowerCase();
+    return approvers.filter(approver =>
+      approver.name.toLowerCase().includes(term) ||
+      approver.email.toLowerCase().includes(term) ||
+      approver.country.toLowerCase().includes(term) ||
+      approver.level.toLowerCase().includes(term)
+    );
+  }, [approvers, searchTerm]);
+ 
   const handleSelectApprover = (approver: Approver, checked: boolean) => {
     const key = `${approver.name}-${approver.country}-${approver.level}`;
     const newSelected = new Set(selectedApprovers);
@@ -323,15 +335,15 @@ export default function Approvers() {
     }
     setSelectedApprovers(newSelected);
   };
-
+ 
   const handleDeleteSelected = async () => {
     if (selectedApprovers.size === 0) return;
-
+ 
     const deletePromises = Array.from(selectedApprovers).map(key => {
       const [name, country, level] = key.split('-');
       return api.deleteApprover(name, country, level);
     });
-
+ 
     try {
       await Promise.all(deletePromises);
       toast({
@@ -348,7 +360,7 @@ export default function Approvers() {
       });
     }
   };
-
+ 
   const handleAddApprover = async () => {
     if (!newApprover.name || !newApprover.email || !newApprover.country || !newApprover.level) {
       toast({
@@ -358,7 +370,7 @@ export default function Approvers() {
       });
       return;
     }
-
+ 
     try {
       await api.addApprover(newApprover);
       toast({
@@ -376,13 +388,11 @@ export default function Approvers() {
       });
     }
   };
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center p-4">
-      {/* Main Container - matches ApproverListModal outer card */}
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-        
-        {/* ✨ Styled Header (same as ApproverListModal) ✨ */}
+        {/* Header */}
         <div className="!bg-gradient-to-r from-[#2b4d8a] via-[#3e6ab3] to-[#2b4d8a] px-4 py-2 border-b-4 border-blue-500 rounded-lg mb-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -397,7 +407,7 @@ export default function Approvers() {
                 Approver List
               </h1>
             </div>
-
+ 
             <div className="flex items-center gap-2">
               {selectedApprovers.size > 0 && (
                 <button
@@ -408,7 +418,7 @@ export default function Approvers() {
                   Delete ({selectedApprovers.size})
                 </button>
               )}
-
+ 
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
                   <button className="flex items-center gap-1.5 bg-[#1a365d] hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-semibold transition-shadow duration-200 shadow-md hover:shadow-lg">
@@ -477,7 +487,21 @@ export default function Approvers() {
             </div>
           </div>
         </div>
-
+ 
+        {/* ✅ Search Bar */}
+        <div className="px-6 pt-4 pb-2">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search approvers by name, email, country, or level..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 focus:ring-1 focus:ring-[#1a365d] focus:border-[#1a365d]"
+            />
+            <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          </div>
+        </div>
+ 
         {/* Content Area */}
         <div className="p-6">
           {loading ? (
@@ -491,10 +515,10 @@ export default function Approvers() {
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-bold text-[#1a365d] uppercase tracking-wider w-12">
                       <Checkbox
-                        checked={selectedApprovers.size === approvers.length && approvers.length > 0}
+                        checked={filteredApprovers.length > 0 && selectedApprovers.size === filteredApprovers.length}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            setSelectedApprovers(new Set(approvers.map(a => 
+                            setSelectedApprovers(new Set(filteredApprovers.map(a =>
                               `${a.name}-${a.country}-${a.level}`
                             )));
                           } else {
@@ -510,27 +534,34 @@ export default function Approvers() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
-                  {approvers.length === 0 ? (
+                  {filteredApprovers.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                        No approvers found. Add your first approver to get started.
+                        {approvers.length === 0
+                          ? 'No approvers found. Add your first approver to get started.'
+                          : 'No approvers match your search.'}
                       </td>
                     </tr>
                   ) : (
-                    approvers.map((approver, idx) => {
+                    filteredApprovers.map((approver, idx) => {
                       const key = `${approver.name}-${approver.country}-${approver.level}`;
                       return (
                         <tr key={idx} className="hover:bg-blue-50 transition-colors duration-200">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Checkbox
                               checked={selectedApprovers.has(key)}
-                              onCheckedChange={(checked) => 
+                              onCheckedChange={(checked) =>
                                 handleSelectApprover(approver, checked as boolean)
                               }
                             />
                           </td>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900">{approver.name}</td>
-                          <td className="px-6 py-4 text-sm text-gray-900">{approver.email}</td>
+                          <td className="px-6 py-4 text-sm text-gray-900">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                              {approver.email}
+                            </div>
+                          </td>
                           <td className="px-6 py-4 text-sm text-gray-900">{approver.country}</td>
                           <td className="px-6 py-4 text-sm text-gray-900">Level {approver.level}</td>
                         </tr>
