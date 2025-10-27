@@ -138,7 +138,6 @@ export default function VendorRegister() {
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
-                    placeholder="John"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                     required
@@ -148,7 +147,6 @@ export default function VendorRegister() {
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
                     id="lastName"
-                    placeholder="Doe"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     required
@@ -160,7 +158,6 @@ export default function VendorRegister() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -170,7 +167,6 @@ export default function VendorRegister() {
                 <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
-                  placeholder="johndoe"
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   required
@@ -181,7 +177,6 @@ export default function VendorRegister() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
@@ -192,7 +187,6 @@ export default function VendorRegister() {
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   required

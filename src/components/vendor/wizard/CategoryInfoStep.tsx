@@ -5,23 +5,23 @@ import { Textarea } from '@/components/ui/textarea';
 import { SupplierData } from '@/types/vendor';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-
+ 
 interface Props {
   data: SupplierData;
   onUpdate: (updates: Partial<SupplierData>) => void;
   onNext: () => void;
   onBack: () => void;
 }
-
+ 
 export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
   const { toast } = useToast();
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-
+ 
   const handleNext = () => {
     const newErrors: Record<string, boolean> = {};
-    
+   
     if (!data.categoryAndRegion.category) newErrors.category = true;
-
+ 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast({
@@ -31,10 +31,10 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
       });
       return;
     }
-
+ 
     onNext();
   };
-
+ 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -51,7 +51,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
             required
           />
         </div>
-
+ 
         <div className="space-y-2">
           <Label htmlFor="catRegion">Region</Label>
           <Input
@@ -62,7 +62,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
             }
           />
         </div>
-
+ 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="additionalInfo">Additional Information</Label>
           <Textarea
@@ -75,7 +75,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
           />
         </div>
       </div>
-
+ 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack}>Back</Button>
         <Button onClick={handleNext}>Next</Button>
@@ -90,22 +90,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { SupplierData } from '@/types/vendor';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-
+ 
 interface Props {
   data: SupplierData;
   onUpdate: (updates: Partial<SupplierData>) => void;
   onNext: () => void;
 }
-
+ 
 export function CategoryInfoStep({ data, onUpdate, onNext }: Props) {
   const { toast } = useToast();
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-
+ 
   const handleNext = () => {
     const newErrors: Record<string, boolean> = {};
-    
+   
     if (!data.categoryAndRegion.category) newErrors.category = true;
-
+ 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       toast({
@@ -115,10 +115,10 @@ export function CategoryInfoStep({ data, onUpdate, onNext }: Props) {
       });
       return;
     }
-
+ 
     onNext();
   };
-
+ 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -135,7 +135,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext }: Props) {
             required
           />
         </div>
-
+ 
         <div className="space-y-2">
           <Label htmlFor="catRegion">Region</Label>
           <Input
@@ -146,7 +146,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext }: Props) {
             }
           />
         </div>
-
+ 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="additionalInfo">Additional Information</Label>
           <Textarea
@@ -159,13 +159,14 @@ export function CategoryInfoStep({ data, onUpdate, onNext }: Props) {
           />
         </div>
       </div>
-
+ 
       <div className="flex justify-end">
         <Button onClick={handleNext}>Next</Button>
       </div>
     </div>
   );
 }*/
+// src/components/formSteps/CategoryInfoStep.tsx
 // src/components/formSteps/CategoryInfoStep.tsx
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -175,20 +176,20 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { SupplierData } from '@/types/vendor';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-
+ 
 interface Props {
   data: SupplierData;
   onUpdate: (updates: Partial<SupplierData>) => void;
   onNext: () => void;
   onBack: () => void;
 }
-
+ 
 export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
   const { toast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  // Validate on data change
+ 
+  // Real-time validation (errors computed but not shown until touched)
   useEffect(() => {
     const newErrors: Record<string, string> = {};
     if (!data.categoryAndRegion.category?.trim()) {
@@ -196,8 +197,11 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
     }
     setErrors(newErrors);
   }, [data.categoryAndRegion.category]);
-
+ 
   const handleNext = () => {
+    // Mark required field as touched to reveal error if invalid
+    setTouched((prev) => ({ ...prev, category: true }));
+ 
     if (errors.category) {
       toast({
         variant: 'destructive',
@@ -208,17 +212,17 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
     }
     onNext();
   };
-
+ 
   const markTouched = (field: string) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
+    setTouched((prev) => ({ ...prev, [field]: true }));
   };
-
+ 
   const getCategoryBorderClass = () => {
-    const hasValue = data.categoryAndRegion.category?.trim();
-    if (touched.category && hasValue) return 'border-[#1a365d]';
-    return errors.category ? 'border-red-500' : 'border-input';
+    if (!touched.category) return 'border-input';
+    if (errors.category) return 'border-red-500';
+    return 'border-[#1a365d]';
   };
-
+ 
   return (
     <Card className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200">
       <CardHeader>
@@ -237,7 +241,9 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
           <div>
             <Label
               htmlFor="category"
-              className={`block text-sm font-medium ${errors.category ? 'text-red-500' : 'text-indigo-700'}`}
+              className={`block text-sm font-medium ${
+                touched.category && errors.category ? 'text-red-500' : 'text-indigo-700'
+              }`}
             >
               Category:<span className="text-red-500">*</span>
             </Label>
@@ -255,7 +261,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
                 transition-colors duration-200 ease-in-out
                 ${getCategoryBorderClass()}`}
             />
-            {errors.category && (
+            {touched.category && errors.category && (
               <p className="mt-1 text-sm text-red-500 italic flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -273,7 +279,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
               </p>
             )}
           </div>
-
+ 
           {/* Region */}
           <div>
             <Label htmlFor="region" className="block text-sm font-medium text-indigo-700">
@@ -292,7 +298,7 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
                 transition-colors duration-200 ease-in-out"
             />
           </div>
-
+ 
           {/* Additional Info */}
           <div className="md:col-span-2">
             <Label htmlFor="additionalInfo" className="block text-sm font-medium text-indigo-700">
@@ -312,13 +318,14 @@ export function CategoryInfoStep({ data, onUpdate, onNext, onBack }: Props) {
             />
           </div>
         </div>
-
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={onBack}>Back</Button>
+ 
+        <div className="flex justify-between mt-6 pt-4 border-t border-gray-200">
+          <Button variant="outline" onClick={onBack}>
+            Back
+          </Button>
           <Button onClick={handleNext}>Next</Button>
         </div>
       </CardContent>
     </Card>
   );
 }
-

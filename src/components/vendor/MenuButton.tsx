@@ -14,7 +14,7 @@ export function MenuButton({ user }: Props) {
 
   const handleLogout = () => {
     sessionStorage.clear();
-    navigate('/vendor-login');
+    navigate('/');
   };
 
   const initials = `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`;
