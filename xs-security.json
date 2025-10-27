@@ -1,6 +1,17 @@
 {
-  "scopes": [],
-  "attributes": [],
-  "role-templates": [],
-  "authorities-inheritance": false
+  "xsappname": "vendor-portal-ui",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.User",
+      "description": "Basic user scope"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "User",
+      "description": "Basic user role",
+      "scope-references": ["$XSAPPNAME.User"]
+    }
+  ]
 }

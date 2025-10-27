@@ -13,7 +13,6 @@ build-parameters:
         - npm run build
 
 modules:
-  # Application Router Module
   - name: vendor-portal-approuter
     type: approuter.nodejs
     path: approuter
@@ -22,6 +21,7 @@ modules:
       memory: 512M
     requires:
       - name: vendor-portal-destination
+      - name: vendor-portal-uaa
     build-parameters:
       builder: npm
       ignore:
@@ -29,7 +29,6 @@ modules:
         - .gitignore
         - package-lock.json
 
-  # UI Module (React App)
   - name: vendor-portal-ui
     type: html5
     path: .
@@ -40,17 +39,10 @@ modules:
         - npm run build
         - mkdir -p approuter/webapp
         - cp -r dist/. approuter/webapp/
-      supported-platforms:
-        []
+      supported-platforms: []
       build-result: dist
-  - name: vite_react_shadcn_ts-srv
-    type: nodejs
-    path: gen/srv
-    requires:
-      - name: vite_react_shadcn_ts-auth
 
 resources:
-  # Destination Service
   - name: vendor-portal-destination
     type: org.cloudfoundry.managed-service
     parameters:
@@ -69,12 +61,13 @@ resources:
                 URL: https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com
                 HTML5.DynamicDestination: true
                 HTML5.ForwardAuthToken: true
-  - name: vite_react_shadcn_ts-auth
+    
+  - name: vendor-portal-uaa
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: vite_react_shadcn_ts-${org}-${space}
+        xsappname: vendor-portal-ui
         tenant-mode: dedicated

@@ -1,46 +1,45 @@
 {
-  "welcomeFile": "index.html",
   "authenticationMethod": "route",
   "routes": [
     {
       "source": "^/odata/(.*)$",
       "target": "/odata/$1",
       "destination": "vendorportaldest",
-      "authenticationType": "none",
+      "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {
       "source": "^/uploadattachments$",
       "target": "/uploadattachments",
       "destination": "vendorportaldest",
-      "authenticationType": "none",
+      "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {
       "source": "^/fileextraction$",
       "target": "/fileextraction",
       "destination": "vendorportaldest",
-      "authenticationType": "none",
+      "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {
       "source": "^/fetchGSTDetails$",
       "target": "/fetchGSTDetails",
       "destination": "vendorportaldest",
-      "authenticationType": "none",
+      "authenticationType": "xsuaa",
       "csrfProtection": false
     },
     {
       "source": "^/downloadZip/(.*)$",
       "target": "/downloadZip/$1",
       "destination": "vendorportaldest",
-      "authenticationType": "none"
+      "authenticationType": "xsuaa"
     },
     {
       "source": "^/downloadFile/(.*)$",
       "target": "/downloadFile/$1",
       "destination": "vendorportaldest",
-      "authenticationType": "none"
+      "authenticationType": "xsuaa"
     },
     {
       "source": "^/(.*)$",
