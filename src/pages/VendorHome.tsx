@@ -73,11 +73,12 @@ import { api } from '@/lib/api';
 import { SupplierWizard } from '@/components/vendor/SupplierWizard';
 import { MenuButton } from '@/components/vendor/MenuButton';
 import { Users, Building2, List } from 'lucide-react';
+import { useAutoLogout } from '@/hooks/use-auto-logout';
 
 export default function VendorHome() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
-
+  useAutoLogout();
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username) {

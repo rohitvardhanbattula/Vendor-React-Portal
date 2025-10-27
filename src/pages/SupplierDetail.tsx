@@ -413,6 +413,7 @@ export default function SupplierDetail() {
   );
 }*/
 import { useEffect, useState } from 'react';
+import { useAutoLogout } from '@/hooks/use-auto-logout';
 import { useNavigate, useParams } from 'react-router-dom';
 import { sessionStorage } from '@/lib/session';
 import { api } from '@/lib/api';
@@ -443,7 +444,7 @@ export default function SupplierDetail() {
   const [attachments, setAttachments] = useState<any[]>([]);
   const [validationResults, setValidationResults] = useState<ValidationRecord[]>([]);
   const [loading, setLoading] = useState(true);
-
+  useAutoLogout();
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username || !name) {

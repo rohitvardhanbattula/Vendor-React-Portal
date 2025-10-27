@@ -200,35 +200,44 @@ export function SupplierWizard() {
       <Card className="shadow-lg">
         <CardContent className="p-6">
           {/* Step Indicator */}
-          <div className="mb-8">
-            <div className="flex items-center justify-end">
+           <div className="mb-8 px-6">
+            <div className="flex items-center justify-center relative">
+              {/* Background track (full width of the step group) */}
+              <div className="absolute h-0.5 bg-muted top-1/2 left-0 right-0 -z-10"></div>
+ 
               {STEPS.map((step, index) => (
-                <div key={step.id} className="flex items-center flex-1">
-                  <div className="flex flex-col items-center">
+                <div key={step.id} className="flex items-center">
+                  {/* Step Circle */}
+                  <div className="flex flex-col items-center z-10">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
-                        currentStep > step.id
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${currentStep > step.id
                           ? 'bg-primary text-primary-foreground'
                           : currentStep === step.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground'
-                      }`}
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground'
+                        }`}
                     >
                       {currentStep > step.id ? <Check className="h-5 w-5" /> : step.id}
                     </div>
-                    <span className="mt-2 text-xs font-medium text-center">{step.title}</span>
+                    <span className="mt-2 text-xs font-medium text-center whitespace-nowrap">
+                      {step.title}
+                    </span>
                   </div>
+ 
+                  {/* Connector Line to next step */}
                   {index < STEPS.length - 1 && (
-                    <div
-                      className={`h-0.5 flex-1 mx-4 transition-colors ${
-                        currentStep > step.id ? 'bg-primary' : 'bg-muted'
-                      }`}
-                    />
+                    <div className="relative mx-6 w-16">
+                      <div
+                        className={`absolute h-0.5 top-1/2 left-0 right-0 transition-colors ${currentStep > step.id ? 'bg-primary' : 'bg-muted'
+                          }`}
+                      />
+                    </div>
                   )}
                 </div>
               ))}
             </div>
           </div>
+ 
 
           {/* Step Content */}
           <div className="mt-8">

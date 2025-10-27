@@ -279,6 +279,7 @@ export default function Suppliers() {
 //}
 
 import { useEffect, useState } from 'react';
+import { useAutoLogout } from '@/hooks/use-auto-logout';
 import { useNavigate } from 'react-router-dom';
 import { sessionStorage } from '@/lib/session';
 import { api } from '@/lib/api';
@@ -311,7 +312,7 @@ export default function Suppliers() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [supplierToDelete, setSupplierToDelete] = useState<string | null>(null);
-
+  useAutoLogout();
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username) {
