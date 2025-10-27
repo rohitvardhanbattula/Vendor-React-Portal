@@ -94,7 +94,7 @@ export default function VendorRegister() {
             title: 'Registration Successful',
             description: 'Your account has been created'
           });
-          navigate('/vendor-login');
+          navigate('/');
         } else {
           toast({
             variant: 'destructive',
@@ -206,7 +206,7 @@ export default function VendorRegister() {
               </Button>
               <div className="text-sm text-center text-muted-foreground">
                 Already have an account?{' '}
-                <Link to="/vendor-login" className="text-primary hover:underline">
+                <Link to="/" className="text-primary hover:underline">
                   Sign in
                 </Link>
               </div>
