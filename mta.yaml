@@ -40,8 +40,14 @@ modules:
         - npm run build
         - mkdir -p approuter/webapp
         - cp -r dist/. approuter/webapp/
-      supported-platforms: []
+      supported-platforms:
+        []
       build-result: dist
+  - name: vite_react_shadcn_ts-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: vite_react_shadcn_ts-auth
 
 resources:
   # Destination Service
@@ -63,4 +69,12 @@ resources:
                 URL: https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com
                 HTML5.DynamicDestination: true
                 HTML5.ForwardAuthToken: true
-    
+  - name: vite_react_shadcn_ts-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: vite_react_shadcn_ts-${org}-${space}
+        tenant-mode: dedicated
