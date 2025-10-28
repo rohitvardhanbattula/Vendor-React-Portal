@@ -21,7 +21,6 @@ modules:
       memory: 512M
     requires:
       - name: vendor-portal-destination
-      # --- CHANGE #1: Point to your existing auth service ---
       - name: vendor-portal-uaa
     build-parameters:
       builder: npm
@@ -49,7 +48,7 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-      
+
   - name: vendor-portal-uaa
     type: org.cloudfoundry.managed-service
     parameters:
@@ -57,5 +56,5 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: "vendor-portal-ui" # From xs-security.json
+        xsappname: vendor-portal-ui
         tenant-mode: dedicated   

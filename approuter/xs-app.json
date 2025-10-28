@@ -2,33 +2,33 @@
   "authenticationMethod": "route",
   "routes": [
     {
-   "source": "^/fetchGSTDetails$",
-   "target": "/fetchGSTDetails",
-   "destination": "vendorportaldest",
-   "csrfProtection": false,
-   "authenticationType": "xsuaa"
-  },
-  {
-   "source": "^/fileextraction$",
-   "target": "/fileextraction",
-   "destination": "vendorportaldest",
-   "csrfProtection": false,
-   "authenticationType": "xsuaa"
-  },
-  {
-   "source": "^/uploadattachments$",
-   "target": "/uploadattachments",
-   "destination": "vendorportaldest",
-   "csrfProtection": false,
-   "authenticationType": "xsuaa"
-  },
-  {
-   "source": "^/?odata/(.*)$",
-   "target": "/odata/$1",
-   "destination": "vendorportaldest",
-   "csrfProtection": false,
-   "authenticationType": "xsuaa"
-  },
+      "source": "^/fetchGSTDetails$",
+      "target": "/fetchGSTDetails",
+      "destination": "vendorportaldest",
+      "csrfProtection": false,
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/fileextraction$",
+      "target": "/fileextraction",
+      "destination": "vendorportaldest",
+      "csrfProtection": false,
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/uploadattachments$",
+      "target": "/uploadattachments",
+      "destination": "vendorportaldest",
+      "csrfProtection": false,
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/?odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "vendorportaldest",
+      "csrfProtection": false,
+      "authenticationType": "none"
+    },
     {
       "source": "^/(.*)$",
       "target": "$1",
