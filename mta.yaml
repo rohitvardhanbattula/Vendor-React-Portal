@@ -21,7 +21,8 @@ modules:
       memory: 512M
     requires:
       - name: vendor-portal-destination
-      - name: vendor-portal-uaa
+      # --- CHANGE #1: Point to your existing auth service ---
+      - name: VendorPortal-auth
     build-parameters:
       builder: npm
       ignore:
@@ -61,13 +62,16 @@ resources:
                 URL: https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com
                 HTML5.DynamicDestination: true
                 HTML5.ForwardAuthToken: true
+                # --- CHANGE #2: Point to your existing auth service ---
+                tokenServiceInstanceName: VendorPortal-auth
     
-  - name: vendor-portal-uaa
-    type: org.cloudfoundry.managed-service
+  # --- CHANGE #3 (Part A): Remove the old uaa resource ---
+  # The "vendor-portal-uaa" resource block has been deleted.
+
+  # --- CHANGE #3 (Part B): Add this block to reference your existing service ---
+  - name: VendorPortal-auth
+    type: org.cloudfoundry.existing-service
     parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: vendor-portal-ui
-        tenant-mode: dedicated
+      # This MUST be the exact name of the XSUAA service
+      # instance as it appears in your Cloud Foundry space.
+      service-name: VendorPortal-auth
