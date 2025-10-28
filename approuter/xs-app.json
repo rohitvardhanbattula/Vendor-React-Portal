@@ -6,28 +6,28 @@
    "target": "/fetchGSTDetails",
    "destination": "vendorportaldest",
    "csrfProtection": false,
-   "authenticationType": "none"
+   "authenticationType": "xsuaa"
   },
   {
    "source": "^/fileextraction$",
    "target": "/fileextraction",
    "destination": "vendorportaldest",
    "csrfProtection": false,
-   "authenticationType": "none"
+   "authenticationType": "xsuaa"
   },
   {
    "source": "^/uploadattachments$",
    "target": "/uploadattachments",
    "destination": "vendorportaldest",
    "csrfProtection": false,
-   "authenticationType": "none"
+   "authenticationType": "xsuaa"
   },
   {
    "source": "^/?odata/(.*)$",
    "target": "/odata/$1",
    "destination": "vendorportaldest",
    "csrfProtection": false,
-   "authenticationType": "none"
+   "authenticationType": "xsuaa"
   },
     {
       "source": "^/(.*)$",

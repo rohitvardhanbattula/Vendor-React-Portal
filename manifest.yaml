@@ -9,4 +9,4 @@ applications:
       - route: vendor-portal-${org}-${space}.cfapps.${region}.hana.ondemand.com
     services:
       - vendor-portal-destination
-      - VendorPortal-auth
+      - vendor-portal-uaa

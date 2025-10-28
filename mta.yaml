@@ -21,7 +21,8 @@ modules:
       memory: 512M
     requires:
       - name: vendor-portal-destination
-      - name: VendorPortal-auth
+      # --- CHANGE #1: Point to your existing auth service ---
+      - name: vendor-portal-uaa
     build-parameters:
       builder: npm
       ignore:
@@ -48,10 +49,13 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-
-  - name: VendorPortal-auth
-    type: org.cloudfoundry.existing-service
+      
+  - name: vendor-portal-uaa
+    type: org.cloudfoundry.managed-service
     parameters:
-      # This MUST be the exact name of the XSUAA service
-      # instance as it appears in your Cloud Foundry space.
-      service-name: VendorPortal-auth
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: "vendor-portal-ui" # From xs-security.json
+        tenant-mode: dedicated   
