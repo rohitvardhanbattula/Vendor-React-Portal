@@ -1,4 +1,3 @@
----
 applications:
   - name: vendor-portal
     path: approuter
@@ -8,16 +7,6 @@ applications:
     instances: 1
     routes:
       - route: vendor-portal-${org}-${space}.cfapps.${region}.hana.ondemand.com
-    env:
-      destinations: >
-        [
-          {
-            "name": "vendorportaldest",
-            "url": "https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com",
-            "forwardAuthToken": true,
-            "authenticationType": OAuth2UserTokenExchange
-
-          }
-        ]
     services:
       - vendor-portal-destination
+      - VendorPortal-auth

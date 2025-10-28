@@ -21,7 +21,6 @@ modules:
       memory: 512M
     requires:
       - name: vendor-portal-destination
-      # --- CHANGE #1: Point to your existing auth service ---
       - name: VendorPortal-auth
     build-parameters:
       builder: npm
@@ -49,26 +48,7 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-      config:
-        init_data:
-          instance:
-            existing_destinations_policy: update
-            destinations:
-              - Name: vendorportaldest
-                Description: Vendor Portal Backend Destination
-                Type: HTTP
-                ProxyType: Internet
-                Authentication: OAuth2UserTokenExchange
-                URL: https://the-hackett-group-d-b-a-answerthink--inc--at-development1a73fa6.cfapps.us10.hana.ondemand.com
-                HTML5.DynamicDestination: true
-                HTML5.ForwardAuthToken: true
-                # --- CHANGE #2: Point to your existing auth service ---
-                tokenServiceInstanceName: VendorPortal-auth
-    
-  # --- CHANGE #3 (Part A): Remove the old uaa resource ---
-  # The "vendor-portal-uaa" resource block has been deleted.
 
-  # --- CHANGE #3 (Part B): Add this block to reference your existing service ---
   - name: VendorPortal-auth
     type: org.cloudfoundry.existing-service
     parameters:
