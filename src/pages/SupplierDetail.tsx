@@ -150,7 +150,7 @@ export default function SupplierDetail() {
                   className="data-[state=active]:bg-[#1a365d] data-[state=active]:text-white rounded-lg py-2 text-sm font-medium transition-colors"
                 >
                   {tab === 'details' && 'Supplier Details'}
-                  {tab === 'gst' && 'AI Extraction & GST Validation'}
+                  {tab === 'gst' && 'AI Extraction & Validation'}
                   {tab === 'approvals' && 'Approvals'}
                   {tab === 'attachments' && 'Attachments'}
                 </TabsTrigger>
@@ -244,66 +244,97 @@ export default function SupplierDetail() {
           </TabsContent>
  
           <TabsContent value="gst" className="outline-none">
-            <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
-              <h3 className="text-lg font-semibold text-[#1a365d] mb-2">GST Validation Results</h3>
-              <p className="text-sm text-gray-600 mb-6">Automated validation of GST information against submitted documents</p>
- 
-              {validationResults.length > 0 && (
-                <div className="mb-6">
-                  <h4 className="font-medium text-gray-800 mb-3">Field-by-Field Validation</h4>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm border border-gray-200 rounded-lg">
-                      <thead className="bg-[#e0e7ff]">
-                        <tr>
-                          <th className="px-4 py-2 text-left text-xs font-bold text-[#1a365d] uppercase">Field</th>
-                          <th className="px-4 py-2 text-left text-xs font-bold text-[#1a365d] uppercase">Status</th>
-                          <th className="px-4 py-2 text-left text-xs font-bold text-[#1a365d] uppercase">Remarks</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        {validationResults.map((result, idx) => (
-                          <tr key={idx} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 font-medium text-gray-900">{result.field}</td>
-                            <td className="px-4 py-3">
-                              <div className="flex items-center gap-2">
-                                {result.status === 'Success' ? (
-                                  <>
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                    <span className="text-green-700 font-medium">Match</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <XCircle className="h-4 w-4 text-red-600" />
-                                    <span className="text-red-700 font-medium">Mismatch</span>
-                                  </>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 text-gray-700">{result.remarks || '—'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
- 
-              {supplier.aiExtractedText && (
-                <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-200">
-                  <p className="text-sm font-medium text-[#1a365d] mb-2 flex items-center gap-2">
-                    <FileText className="h-4 w-4" /> Extracted GST Information:
-                  </p>
-                  <pre className="text-xs bg-white p-3 rounded border font-mono whitespace-pre-wrap">
-                    {supplier.aiExtractedText}
-                  </pre>
-                </div>
-              )}
- 
-              {validationResults.length === 0 && !supplier.aiExtractedText && (
-                <p className="text-center text-gray-500 py-8">No GST validation data available</p>
-              )}
-            </div>
-          </TabsContent>
+  <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-2xl border border-gray-200 p-6 space-y-6">
+
+    {/* 🔹 AI Extracted Information Section */}
+    {supplier.aiExtractedText && (
+      <div className="p-5 bg-blue-50 rounded-xl border border-blue-200 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <FileText className="h-5 w-5 text-[#1a365d]" />
+          <h4 className="text-base font-semibold text-[#1a365d]">
+            Extracted AI Information
+          </h4>
+        </div>
+        <pre className="text-sm bg-white p-4 rounded-lg border border-gray-200 font-mono whitespace-pre-wrap text-gray-800 overflow-x-auto">
+          {supplier.aiExtractedText}
+        </pre>
+      </div>
+    )}
+
+    {/* 🔹 GST Validation Header */}
+    <div>
+      <h3 className="text-lg font-semibold text-[#1a365d] mb-1">
+        GST Validation Results
+      </h3>
+      <p className="text-sm text-gray-600">
+        Automated validation of GST information against submitted documents.
+      </p>
+    </div>
+
+    {/* 🔹 Validation Results Table */}
+    {validationResults.length > 0 ? (
+      <div className="space-y-3">
+        <h4 className="font-medium text-gray-800">Field-by-Field Validation</h4>
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
+          <table className="min-w-full text-sm bg-white rounded-lg">
+            <thead className="bg-indigo-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-bold text-[#1a365d] uppercase">
+                  Field
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-[#1a365d] uppercase">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-[#1a365d] uppercase">
+                  Remarks
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {validationResults.map((result, idx) => (
+                <tr key={idx} className="hover:bg-gray-50 transition">
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    {result.field}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      {result.status === 'Success' ? (
+                        <>
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          <span className="text-green-700 font-medium">
+                            Match
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="h-4 w-4 text-red-600" />
+                          <span className="text-red-700 font-medium">
+                            Mismatch
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-gray-700">
+                    {result.remarks || '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ) : (
+      // 🔹 Empty State
+      !supplier.aiExtractedText && (
+        <div className="text-center text-gray-500 py-10">
+          <p className="text-sm">No validation data available.</p>
+        </div>
+      )
+    )}
+  </div>
+</TabsContent>
+
  
           <TabsContent value="approvals" className="outline-none">
             <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
