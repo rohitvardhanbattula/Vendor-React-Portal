@@ -85,7 +85,7 @@
   "cds": {
     "requires": {
       "[production]": {
-        "auth": "xsuaa"
+        "auth": "none"
       }
     }
   }
