@@ -21,7 +21,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
+ 
 export default function SupplierDetail() {
   const navigate = useNavigate();
   const { name } = useParams<{ name: string }>();
@@ -31,15 +31,16 @@ export default function SupplierDetail() {
   const [validationResults, setValidationResults] = useState<ValidationRecord[]>([]);
   const [loading, setLoading] = useState(true);
   useAutoLogout();
+ 
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username || !name) {
       navigate('/vendor-login');
       return;
     }
-
+ 
     const decodedName = decodeURIComponent(name);
-
+ 
     Promise.all([
       api.getSuppliers(session.username),
       api.getApprovals(decodedName, session.username),
@@ -55,7 +56,7 @@ export default function SupplierDetail() {
       })
       .finally(() => setLoading(false));
   }, [name, navigate]);
-
+ 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
@@ -66,7 +67,7 @@ export default function SupplierDetail() {
       </div>
     );
   }
-
+ 
   if (!supplier) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
@@ -82,7 +83,7 @@ export default function SupplierDetail() {
       </div>
     );
   }
-
+ 
   const getStatusIcon = (status?: string) => {
     switch (status?.toLowerCase()) {
       case 'approved':
@@ -93,7 +94,7 @@ export default function SupplierDetail() {
         return <Clock className="h-5 w-5 text-yellow-600" />;
     }
   };
-
+ 
   const getStatusBadge = (status?: string) => {
     let bgColor = 'bg-gray-100 text-gray-800';
     if (status === 'Approved') bgColor = 'bg-green-100 text-green-800';
@@ -101,10 +102,11 @@ export default function SupplierDetail() {
     else if (status === 'Rejected') bgColor = 'bg-red-100 text-red-800';
     return <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${bgColor}`}>{status}</span>;
   };
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container mx-auto px-4 py-6">
+      {/* 🎯 Applied Centering and Max-Width here */}
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
         {/* Back Button */}
         <div className="mb-4">
           <button
@@ -115,7 +117,7 @@ export default function SupplierDetail() {
             Back to Suppliers
           </button>
         </div>
-
+ 
         {/* Page Header */}
         <div className="!bg-gradient-to-r from-[#2b4d8a] via-[#3e6ab3] to-[#2b4d8a] px-6 py-2 border-b-4 border-blue-500 rounded-lg mb-6 shadow-sm">
           <div className="flex items-center gap-4">
@@ -127,14 +129,16 @@ export default function SupplierDetail() {
               <div className="flex items-center gap-3 mt-1">
                 {getStatusBadge(supplier.status)}
                 {supplier.businessPartnerId && (
-                  <span className="text-sm text-blue-200">BP ID: {supplier.businessPartnerId}</span>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+            SAP BUSINESS PARTNER ID: {supplier.businessPartnerId}
+          </span>
                 )}
               </div>
             </div>
           </div>
         </div>
-
-        {/* ✅ CORRECTED: Tabs wrapper contains BOTH TabsList AND all TabsContent */}
+ 
+        {/* Tabs wrapper contains BOTH TabsList AND all TabsContent */}
         <Tabs defaultValue="details" className="space-y-6">
           {/* Tabs UI (styled container) */}
           <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-1">
@@ -146,15 +150,15 @@ export default function SupplierDetail() {
                   className="data-[state=active]:bg-[#1a365d] data-[state=active]:text-white rounded-lg py-2 text-sm font-medium transition-colors"
                 >
                   {tab === 'details' && 'Supplier Details'}
-                  {tab === 'gst' && 'GST Validation'}
+                  {tab === 'gst' && 'AI Extraction & GST Validation'}
                   {tab === 'approvals' && 'Approvals'}
                   {tab === 'attachments' && 'Attachments'}
                 </TabsTrigger>
               ))}
             </TabsList>
           </div>
-
-          {/* ✅ All TabsContent are INSIDE <Tabs> */}
+ 
+          {/* All TabsContent are INSIDE <Tabs> */}
           <TabsContent value="details" className="outline-none">
             <div className="space-y-5">
               <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
@@ -190,7 +194,7 @@ export default function SupplierDetail() {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
                 <h3 className="text-lg font-semibold text-[#1a365d] mb-4 flex items-center gap-2">
                   <User className="h-5 w-5" /> Contact Information
@@ -214,7 +218,7 @@ export default function SupplierDetail() {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
                 <h3 className="text-lg font-semibold text-[#1a365d] mb-4">Category & Additional Information</h3>
                 <div className="space-y-3 text-sm text-gray-700">
@@ -238,12 +242,12 @@ export default function SupplierDetail() {
               </div>
             </div>
           </TabsContent>
-
+ 
           <TabsContent value="gst" className="outline-none">
             <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
               <h3 className="text-lg font-semibold text-[#1a365d] mb-2">GST Validation Results</h3>
               <p className="text-sm text-gray-600 mb-6">Automated validation of GST information against submitted documents</p>
-
+ 
               {validationResults.length > 0 && (
                 <div className="mb-6">
                   <h4 className="font-medium text-gray-800 mb-3">Field-by-Field Validation</h4>
@@ -283,7 +287,7 @@ export default function SupplierDetail() {
                   </div>
                 </div>
               )}
-
+ 
               {supplier.aiExtractedText && (
                 <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-200">
                   <p className="text-sm font-medium text-[#1a365d] mb-2 flex items-center gap-2">
@@ -294,18 +298,18 @@ export default function SupplierDetail() {
                   </pre>
                 </div>
               )}
-
+ 
               {validationResults.length === 0 && !supplier.aiExtractedText && (
                 <p className="text-center text-gray-500 py-8">No GST validation data available</p>
               )}
             </div>
           </TabsContent>
-
+ 
           <TabsContent value="approvals" className="outline-none">
             <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
               <h3 className="text-lg font-semibold text-[#1a365d] mb-2">Approval Workflow</h3>
               <p className="text-sm text-gray-600 mb-6">Track approval status across different levels</p>
-
+ 
               {approvals.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">No approval records found</p>
               ) : (
@@ -343,14 +347,14 @@ export default function SupplierDetail() {
               )}
             </div>
           </TabsContent>
-
+ 
           <TabsContent value="attachments" className="outline-none">
             <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-5">
               <h3 className="text-lg font-semibold text-[#1a365d] mb-2 flex items-center gap-2">
                 <FileText className="h-5 w-5" /> Attachments
               </h3>
               <p className="text-sm text-gray-600 mb-6">Documents and files attached to this supplier</p>
-
+ 
               {attachments.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">No attachments found</p>
               ) : (
@@ -381,7 +385,7 @@ export default function SupplierDetail() {
                       </Button>
                     </div>
                   ))}
-
+ 
                   <div className="pt-4 border-t border-gray-200">
                     <Button
                       onClick={() => {

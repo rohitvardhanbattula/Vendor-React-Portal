@@ -83,7 +83,7 @@ export default function VendorHome() {
         </div>
       </header>
  
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-0 pb-8">
         <SupplierWizard />
       </main>
     </div>

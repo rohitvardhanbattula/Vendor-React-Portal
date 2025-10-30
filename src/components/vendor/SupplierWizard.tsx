@@ -12,8 +12,8 @@ import { FileUploadStep } from './wizard/FileUploadStep';
 import { ReviewStep } from './wizard/ReviewStep';
 import { ProgressDialog } from './wizard/ProgressDialog';
 import { Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // ✅ Import once
-
+import { useNavigate } from 'react-router-dom';
+ 
 const STEPS = [
   { id: 1, title: 'Supplier Details' },
   { id: 2, title: 'Contact Details' },
@@ -21,11 +21,11 @@ const STEPS = [
   { id: 4, title: 'Upload Attachments' },
   { id: 5, title: 'Review & Submit' }
 ];
-
+ 
 export function SupplierWizard() {
   const { toast } = useToast();
-  const navigate = useNavigate(); // ✅ Moved to top level — correct!
-  
+  const navigate = useNavigate();
+ 
   const [currentStep, setCurrentStep] = useState(1);
   const [supplierData, setSupplierData] = useState<SupplierData>({
     supplierName: '',
@@ -56,11 +56,11 @@ export function SupplierWizard() {
     supplier: 'idle',
     gst: 'idle'
   });
-
+ 
   const updateSupplierData = (updates: Partial<SupplierData>) => {
     setSupplierData(prev => ({ ...prev, ...updates }));
   };
-
+ 
   const resetForm = () => {
     setCurrentStep(1);
     setSupplierData({
@@ -72,12 +72,11 @@ export function SupplierWizard() {
     });
     setUploadedFiles([]);
   };
-
+ 
   const handleSubmit = async () => {
-    // ❌ NEVER call useNavigate() here — already available via closure
     const session = sessionStorage.get();
     if (!session?.username) return;
-
+ 
     if (uploadedFiles.length === 0) {
       toast({
         variant: 'destructive',
@@ -86,7 +85,7 @@ export function SupplierWizard() {
       });
       return;
     }
-
+ 
     const exists = await api.checkIfSupplierExists(supplierData.supplierName, session.username);
     if (exists) {
       toast({
@@ -96,17 +95,17 @@ export function SupplierWizard() {
       });
       return;
     }
-
+ 
     setShowProgress(true);
     setProgressSteps({ supplier: 'idle', gst: 'inprogress' });
-
+ 
     try {
       const extractedText = await api.extractTextFromFile(uploadedFiles[0].file);
-
+ 
       const gstinRegex = /\b\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]\b/;
       const gstinMatch = extractedText.match(gstinRegex);
       const gstin = gstinMatch ? gstinMatch[0] : null;
-
+ 
       let validationData: GSTValidation | null = null;
       if (gstin) {
         const gstData = await api.validateGST(gstin);
@@ -118,7 +117,7 @@ export function SupplierWizard() {
       } else {
         setProgressSteps(prev => ({ ...prev, gst: 'failed' }));
       }
-
+ 
       if (validationData && validationData.results.length > 0) {
         await Promise.all(
           validationData.results.map(result =>
@@ -132,32 +131,32 @@ export function SupplierWizard() {
           )
         );
       }
-
+ 
       setProgressSteps(prev => ({ ...prev, supplier: 'inprogress' }));
       await api.createSupplierWithFiles(supplierData, session.username);
-
+ 
       if (extractedText) {
         await api.saveExtractedText(session.username, supplierData.supplierName, extractedText);
       }
-
+ 
       if (uploadedFiles.length > 0) {
         const files = uploadedFiles.map(f => f.file);
         await api.uploadAttachments(supplierData.supplierName, session.username, files);
       }
-
+ 
       setProgressSteps(prev => ({ ...prev, supplier: 'success' }));
-
+ 
       toast({
         title: 'Success',
         description: 'Supplier created successfully and approval process initiated'
       });
-
+ 
       setTimeout(() => {
         resetForm();
         setShowProgress(false);
-        navigate(`/suppliers/${encodeURIComponent(supplierData.supplierName)}`); // ✅ Safe to use
+        navigate(`/suppliers/${encodeURIComponent(supplierData.supplierName)}`);
       }, 2000);
-
+ 
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -167,14 +166,14 @@ export function SupplierWizard() {
       setProgressSteps({ supplier: 'failed', gst: 'failed' });
     }
   };
-
+ 
   const validateGSTData = async (gstData: any, supplierData: SupplierData): Promise<GSTValidation> => {
     const normalizeString = (str: string) =>
       str.toLowerCase().replace(/[\s.,]/g, '');
-
+ 
     const results = [];
     let overallStatus: 'Success' | 'Failed' = 'Success';
-
+ 
     const isNameMatch = normalizeString(gstData.gstTradeName || '') ===
       normalizeString(supplierData.supplierName);
     results.push({
@@ -183,7 +182,7 @@ export function SupplierWizard() {
       remarks: isNameMatch ? 'Match' : `Expected: ${gstData.gstTradeName}`
     });
     if (!isNameMatch) overallStatus = 'Failed';
-
+ 
     const isPincodeMatch = gstData.gstPincode === supplierData.mainAddress.postalCode;
     results.push({
       field: 'Pincode',
@@ -191,16 +190,18 @@ export function SupplierWizard() {
       remarks: isPincodeMatch ? 'Match' : `Expected: ${gstData.gstPincode}`
     });
     if (!isPincodeMatch) overallStatus = 'Failed';
-
+ 
     return { results, overallStatus };
   };
-
+ 
   return (
-    <>
-      <Card className="shadow-lg">
+    // 🎯 Added a wrapper div to set a max width and center the card,
+    // which aligns with the layout of the provided screenshot.
+    <div className="flex justify-center py-8">
+      <Card className="shadow-lg w-full max-w-5xl">
         <CardContent className="p-6">
           {/* Step Indicator */}
-           <div className="mb-8 px-6">
+            <div className="mb-8 px-6">
             <div className="flex items-center justify-center relative">
               {/* Background track (full width of the step group) */}
               <div className="absolute h-0.5 bg-muted top-1/2 left-0 right-0 -z-10"></div>
@@ -211,10 +212,10 @@ export function SupplierWizard() {
                   <div className="flex flex-col items-center z-10">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${currentStep > step.id
+                        ? 'bg-primary text-primary-foreground'
+                        : currentStep === step.id
                           ? 'bg-primary text-primary-foreground'
-                          : currentStep === step.id
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted text-muted-foreground'
+                          : 'bg-muted text-muted-foreground'
                         }`}
                     >
                       {currentStep > step.id ? <Check className="h-5 w-5" /> : step.id}
@@ -238,7 +239,6 @@ export function SupplierWizard() {
             </div>
           </div>
  
-
           {/* Step Content */}
           <div className="mt-8">
             {currentStep === 1 && (
@@ -283,12 +283,13 @@ export function SupplierWizard() {
           </div>
         </CardContent>
       </Card>
-
+ 
       <ProgressDialog
         open={showProgress}
         steps={progressSteps}
         onClose={() => setShowProgress(false)}
       />
-    </>
+    </div>
   );
 }
+ 

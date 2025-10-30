@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-
+ 
 export default function Suppliers() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -33,13 +33,14 @@ export default function Suppliers() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [supplierToDelete, setSupplierToDelete] = useState<string | null>(null);
   useAutoLogout();
+ 
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username) {
-      navigate('/vendor-login');
+      navigate('/');
       return;
     }
-
+ 
     api.getSuppliers(session.username)
       .then(data => {
         setSuppliers(data);
@@ -47,42 +48,42 @@ export default function Suppliers() {
       })
       .finally(() => setLoading(false));
   }, [navigate]);
-
+ 
   useEffect(() => {
     let filtered = suppliers;
-
+ 
     if (searchName) {
-      filtered = filtered.filter(s => 
+      filtered = filtered.filter(s =>
         s.supplierName.toLowerCase().includes(searchName.toLowerCase())
       );
     }
-
+ 
     if (filterCountry !== 'all') {
       filtered = filtered.filter(s => s.mainAddress?.country === filterCountry);
     }
-
+ 
     if (filterStatus !== 'all') {
       filtered = filtered.filter(s => s.status === filterStatus);
     }
-
+ 
     setFilteredSuppliers(filtered);
   }, [searchName, filterCountry, filterStatus, suppliers]);
-
+ 
   const countries = Array.from(new Set(suppliers.map(s => s.mainAddress?.country).filter(Boolean)));
   const statuses = Array.from(new Set(suppliers.map(s => s.status).filter(Boolean)));
-
+ 
   const handleDeleteClick = (supplierName: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setSupplierToDelete(supplierName);
     setDeleteDialogOpen(true);
   };
-
+ 
   const handleConfirmDelete = async () => {
     if (!supplierToDelete) return;
-    
+ 
     const session = sessionStorage.get();
     if (!session?.username) return;
-
+ 
     try {
       await api.deleteSupplier(supplierToDelete, session.username);
       setSuppliers(prev => prev.filter(s => s.supplierName !== supplierToDelete));
@@ -101,23 +102,23 @@ export default function Suppliers() {
       setSupplierToDelete(null);
     }
   };
-
+ 
   // Status badge with colors matching SuppliersListPage
   const getStatusBadge = (status?: string) => {
     if (!status) return <span className="text-gray-500">—</span>;
-    
+ 
     let bgColor = 'bg-gray-100 text-gray-800';
     if (status === 'Approved' || status === 'Active') bgColor = 'bg-green-100 text-green-800';
     else if (status === 'Pending' || status === 'In Review') bgColor = 'bg-yellow-100 text-yellow-800';
     else if (status === 'Rejected') bgColor = 'bg-red-100 text-red-800';
-
+ 
     return (
       <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${bgColor}`}>
         {status}
       </span>
     );
   };
-
+ 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
@@ -128,10 +129,11 @@ export default function Suppliers() {
       </div>
     );
   }
-
+ 
   return (
+    // 💡 Applied centering and max-width to the main content wrapper
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6 max-w-7xl"> {/* ✅ max-w-7xl to limit width and mx-auto to center */}
         {/* Back Button */}
         <div className="mb-4">
           <button
@@ -142,7 +144,7 @@ export default function Suppliers() {
             Back to Home
           </button>
         </div>
-
+ 
         {/* Page Header */}
         <div className="
           !bg-gradient-to-r from-[#2b4d8a] via-[#3e6ab3] to-[#2b4d8a]
@@ -156,7 +158,7 @@ export default function Suppliers() {
             Suppliers
           </h1>
         </div>
-
+ 
         {/* Filters Card */}
         <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 p-3 mb-5">
           <div className="flex flex-wrap items-end gap-5">
@@ -173,7 +175,7 @@ export default function Suppliers() {
                 />
               </div>
             </div>
-
+ 
             {/* Filter by Country */}
             <div className="flex-1 min-w-[240px] group">
               <label className="block text-sm font-semibold text-[#1a365d] mb-2">Country</label>
@@ -190,7 +192,7 @@ export default function Suppliers() {
                 </SelectContent>
               </Select>
             </div>
-
+ 
             {/* Filter by Status */}
             <div className="flex-1 min-w-[240px] group">
               <label className="block text-sm font-semibold text-[#1a365d] mb-2">Status</label>
@@ -209,12 +211,12 @@ export default function Suppliers() {
             </div>
           </div>
         </div>
-
+ 
         {/* Results Count */}
         <div className="mb-4 text-sm text-gray-600">
           Showing {filteredSuppliers.length} of {suppliers.length} suppliers
         </div>
-
+ 
         {/* Suppliers Table */}
         <div className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 shadow-md rounded-xl border border-gray-200 overflow-hidden">
           {filteredSuppliers.length === 0 ? (
@@ -236,7 +238,7 @@ export default function Suppliers() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filteredSuppliers.map((supplier, idx) => (
-                    <tr 
+                    <tr
                       key={idx}
                       className="group hover:bg-gray-50 transition-all duration-200 cursor-pointer"
                       onClick={() => navigate(`/suppliers/${encodeURIComponent(supplier.supplierName)}`)}
@@ -275,7 +277,7 @@ export default function Suppliers() {
           )}
         </div>
       </div>
-
+ 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
@@ -297,3 +299,4 @@ export default function Suppliers() {
     </div>
   );
 }
+ 
