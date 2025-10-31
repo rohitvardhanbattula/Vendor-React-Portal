@@ -15,7 +15,7 @@ export default function VendorHome() {
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username) {
-      navigate('/vendor-login');
+      navigate('/');
       return;
     }
  

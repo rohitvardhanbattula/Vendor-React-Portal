@@ -35,7 +35,7 @@ export default function SupplierDetail() {
   useEffect(() => {
     const session = sessionStorage.get();
     if (!session?.username || !name) {
-      navigate('/vendor-login');
+      navigate('/');
       return;
     }
  
